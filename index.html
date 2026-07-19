@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FASHION AI - Intelligence & Style</title>
+    <title>FASHION AI - パーソナルAIスタイリスト</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&family=Noto+Sans+JP:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
@@ -20,28 +19,27 @@
         .weather-btn:checked + label { background-color: var(--accent); color: #FFF; border-color: var(--accent); }
         .chip-input:checked + label { background-color: var(--accent); color: #FFF; border-color: var(--accent); }
         .no-scrollbar::-webkit-scrollbar { display: none; }
-        .nav-icon { transition: all 0.2s; }
         .color-dot { width: 10px; height: 10px; border-radius: 50%; border: 1px solid #EEE; }
     </style>
 </head>
 <body class="max-w-md mx-auto relative min-h-screen pb-24">
 
-    <!-- 1. HOME SCREEN (Today's Condition + Closet Preview) -->
+    <!-- 1. ホーム画面 -->
     <div id="screen-home" class="screen active pb-10">
         <header class="pt-12 px-6 mb-8 text-center">
             <h1 class="text-3xl font-bold tracking-tighter mb-1 italic uppercase">Fashion AI</h1>
-            <p class="text-[9px] text-gray-400 font-light tracking-[0.4em] uppercase">Intelligence & Style Engine</p>
+            <p class="text-[9px] text-gray-400 font-light tracking-[0.4em] uppercase">AIスタイリング・エンジン</p>
         </header>
 
         <section class="px-6 mb-8">
             <div class="premium-card p-6">
                 <div class="flex items-center justify-between mb-6">
-                    <h2 class="text-sm font-bold flex items-center gap-2">Today’s Setup</h2>
-                    <div id="learning-level-home" class="text-[9px] font-bold bg-gray-100 px-2 py-0.5 rounded-full uppercase">LV. 01</div>
+                    <h2 class="text-sm font-bold flex items-center gap-2">今日のコンディション</h2>
+                    <div id="learning-level-home" class="text-[9px] font-bold bg-gray-100 px-2 py-0.5 rounded-full uppercase text-gray-500">学習レベル: 01</div>
                 </div>
                 
                 <div class="space-y-6">
-                    <!-- Weather -->
+                    <!-- 天気選択 -->
                     <div class="flex justify-between gap-2">
                         <input type="radio" name="weather" id="w-sunny" value="Sunny" class="hidden weather-btn" checked>
                         <label for="w-sunny" class="flex-1 text-center py-3 border border-gray-100 rounded-2xl text-lg cursor-pointer">☀️</label>
@@ -53,27 +51,27 @@
                         <label for="w-snowy" class="flex-1 text-center py-3 border border-gray-100 rounded-2xl text-lg cursor-pointer">❄️</label>
                     </div>
 
-                    <!-- Input Grid -->
+                    <!-- 入力項目 -->
                     <div class="grid grid-cols-2 gap-4">
                         <div class="space-y-1">
-                            <label class="text-[8px] font-bold text-gray-400 uppercase tracking-widest px-2">Temp (°C)</label>
+                            <label class="text-[8px] font-bold text-gray-400 uppercase tracking-widest px-2">予想気温 (°C)</label>
                             <input type="number" id="input-temp" value="22" class="w-full p-4 bg-gray-50 rounded-2xl font-bold focus:outline-none">
                         </div>
                         <div class="space-y-1">
-                            <label class="text-[8px] font-bold text-gray-400 uppercase tracking-widest px-2">Purpose</label>
+                            <label class="text-[8px] font-bold text-gray-400 uppercase tracking-widest px-2">今日の目的</label>
                             <select id="input-purpose" class="w-full p-4 bg-gray-50 rounded-2xl font-bold text-xs focus:outline-none appearance-none">
-                                <option value="普段着">Casual</option>
-                                <option value="デート">Date</option>
-                                <option value="大人カジュアル">Smart Casual</option>
-                                <option value="旅行">Travel</option>
-                                <option value="モード">Mode</option>
-                                <option value="韓国ストリート">Street</option>
+                                <option value="普段着">普段着</option>
+                                <option value="デート">デート</option>
+                                <option value="大人カジュアル">大人カジュアル</option>
+                                <option value="旅行">旅行</option>
+                                <option value="モード">モード</option>
+                                <option value="韓国ストリート">韓国ストリート</option>
                             </select>
                         </div>
                     </div>
 
                     <button onclick="generateSmartOutfit()" class="btn-gradient w-full py-5 rounded-3xl text-white font-bold text-sm shadow-xl flex items-center justify-center gap-2 tracking-widest">
-                        TODAY’S BEST OUTFIT
+                        今日のベストコーデを提案
                     </button>
                 </div>
             </div>
@@ -81,171 +79,171 @@
 
         <section class="px-6">
             <div class="flex justify-between items-end mb-4">
-                <h2 class="text-xl font-bold">My Closet</h2>
-                <button onclick="navigateTo('closet')" class="text-[10px] font-bold text-gray-400 uppercase underline">All Items</button>
+                <h2 class="text-xl font-bold">クローゼット</h2>
+                <button onclick="navigateTo('closet')" class="text-[10px] font-bold text-gray-400 uppercase underline">すべて見る</button>
             </div>
             <div id="home-closet-preview" class="grid grid-cols-2 gap-4"></div>
         </section>
     </div>
 
-    <!-- 2. RESULT SCREEN (Recommendation, Reason, Alternatives) -->
+    <!-- 2. 提案結果画面 -->
     <div id="screen-results" class="screen pb-32">
         <header class="pt-12 px-6 mb-6 flex justify-between items-center">
             <button onclick="navigateTo('home')"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg></button>
-            <h2 class="font-bold tracking-tighter italic text-xl uppercase">Best Choice</h2>
+            <h2 class="font-bold tracking-tighter italic text-xl uppercase">ベストな組み合わせ</h2>
             <div class="w-6"></div>
         </header>
 
         <div class="px-6 space-y-8">
-            <!-- Main Outfit Card -->
+            <!-- メインコーデ -->
             <div id="main-outfit-container" class="premium-card p-6 shadow-2xl"></div>
 
-            <!-- AI Reason -->
+            <!-- AIの提案理由 -->
             <div class="px-2">
-                <h3 class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-2">AI Reasoning</h3>
+                <h3 class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-2">AIの提案理由</h3>
                 <p id="ai-reason-text" class="text-[11px] text-gray-600 leading-relaxed italic"></p>
             </div>
 
-            <!-- Alternatives -->
+            <!-- 他の候補 -->
             <div class="space-y-4">
-                <h3 class="text-[9px] font-bold text-gray-400 uppercase tracking-widest px-2">Alternative Options</h3>
+                <h3 class="text-[9px] font-bold text-gray-400 uppercase tracking-widest px-2">他の候補</h3>
                 <div id="alternative-container" class="grid grid-cols-2 gap-4"></div>
             </div>
 
             <button onclick="generateSmartOutfit()" class="w-full py-4 bg-white border border-gray-100 rounded-2xl text-[10px] font-bold uppercase tracking-widest shadow-sm">
-                🔄 Regenerate
+                🔄 もう一度提案する
             </button>
         </div>
     </div>
 
-    <!-- 3. CLOSET SCREEN (Add & Grid) -->
+    <!-- 3. クローゼット画面 -->
     <div id="screen-closet" class="screen pb-32">
         <header class="pt-12 px-6 mb-6 flex justify-between items-center">
-            <h1 class="text-2xl font-bold uppercase italic tracking-tighter">Closet</h1>
+            <h1 class="text-2xl font-bold uppercase italic tracking-tighter">クローゼット</h1>
             <button onclick="navigateTo('add-item')" class="bg-black text-white p-3 rounded-full shadow-lg"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg></button>
         </header>
         <div id="closet-grid" class="px-6 grid grid-cols-2 gap-4"></div>
     </div>
 
-    <!-- 4. ADD ITEM SCREEN -->
+    <!-- 4. アイテム登録画面 -->
     <div id="screen-add-item" class="screen pb-32">
         <header class="pt-12 px-6 mb-6 flex items-center gap-4">
             <button onclick="navigateTo('closet')"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M15 19l-7-7 7-7" /></svg></button>
-            <h1 class="text-xl font-bold uppercase tracking-tighter">Add New Item</h1>
+            <h1 class="text-xl font-bold uppercase tracking-tighter">新しいアイテムを登録</h1>
         </header>
         <form id="add-item-form" class="px-6 space-y-6">
-            <div id="image-preview" class="h-72 bg-gray-100 rounded-[32px] flex items-center justify-center cursor-pointer bg-cover bg-center border-2 border-dashed border-gray-200" onclick="document.getElementById('file-input').click()">TAP TO UPLOAD</div>
+            <div id="image-preview" class="h-72 bg-gray-100 rounded-[32px] flex items-center justify-center cursor-pointer bg-cover bg-center border-2 border-dashed border-gray-200" onclick="document.getElementById('file-input').click()">タップして写真をアップロード</div>
             <input type="file" id="file-input" class="hidden" accept="image/*" onchange="handleImageSelect(event)">
             
             <div class="space-y-4">
-                <label class="text-[9px] font-bold text-gray-400 uppercase tracking-widest px-2">Category</label>
+                <label class="text-[9px] font-bold text-gray-400 uppercase tracking-widest px-2">カテゴリー</label>
                 <div class="grid grid-cols-3 gap-2">
-                    <input type="radio" name="cat" id="cat1" value="Tシャツ" class="hidden chip-input" checked><label for="cat1" class="text-center py-2 border rounded-xl text-[10px]">T-SHIRT</label>
-                    <input type="radio" name="cat" id="cat2" value="シャツ" class="hidden chip-input"><label for="cat2" class="text-center py-2 border rounded-xl text-[10px]">SHIRT</label>
-                    <input type="radio" name="cat" id="cat3" value="ジャケット" class="hidden chip-input"><label for="cat3" class="text-center py-2 border rounded-xl text-[10px]">JACKET</label>
-                    <input type="radio" name="cat" id="cat4" value="パンツ" class="hidden chip-input"><label for="cat4" class="text-center py-2 border rounded-xl text-[10px]">PANTS</label>
-                    <input type="radio" name="cat" id="cat5" value="パーカー" class="hidden chip-input"><label for="cat5" class="text-center py-2 border rounded-xl text-[10px]">HOODIE</label>
-                    <input type="radio" name="cat" id="cat6" value="スニーカー" class="hidden chip-input"><label for="cat6" class="text-center py-2 border rounded-xl text-[10px]">SHOES</label>
+                    <input type="radio" name="cat" id="cat1" value="Tシャツ" class="hidden chip-input" checked><label for="cat1" class="text-center py-2 border rounded-xl text-[10px]">Tシャツ</label>
+                    <input type="radio" name="cat" id="cat2" value="シャツ" class="hidden chip-input"><label for="cat2" class="text-center py-2 border rounded-xl text-[10px]">シャツ</label>
+                    <input type="radio" name="cat" id="cat3" value="ジャケット" class="hidden chip-input"><label for="cat3" class="text-center py-2 border rounded-xl text-[10px]">ジャケット</label>
+                    <input type="radio" name="cat" id="cat4" value="パンツ" class="hidden chip-input"><label for="cat4" class="text-center py-2 border rounded-xl text-[10px]">パンツ</label>
+                    <input type="radio" name="cat" id="cat5" value="パーカー" class="hidden chip-input"><label for="cat5" class="text-center py-2 border rounded-xl text-[10px]">パーカー</label>
+                    <input type="radio" name="cat" id="cat6" value="スニーカー" class="hidden chip-input"><label for="cat6" class="text-center py-2 border rounded-xl text-[10px]">シューズ</label>
                 </div>
             </div>
 
             <div class="flex gap-4">
-                <input type="text" id="item-color" placeholder="COLOR" class="flex-1 p-4 bg-white border border-gray-100 rounded-2xl text-xs uppercase font-bold">
-                <input type="text" id="item-brand" placeholder="BRAND" class="flex-1 p-4 bg-white border border-gray-100 rounded-2xl text-xs uppercase font-bold">
+                <input type="text" id="item-color" placeholder="カラー (例: ブラック)" class="flex-1 p-4 bg-white border border-gray-100 rounded-2xl text-xs font-bold focus:outline-none">
+                <input type="text" id="item-brand" placeholder="ブランド" class="flex-1 p-4 bg-white border border-gray-100 rounded-2xl text-xs font-bold focus:outline-none">
             </div>
-            <button type="button" onclick="saveItem()" class="btn-gradient w-full py-5 rounded-3xl text-white font-bold shadow-xl">SAVE TO CLOSET</button>
+            <button type="button" onclick="saveItem()" class="btn-gradient w-full py-5 rounded-3xl text-white font-bold text-sm tracking-widest shadow-xl">クローゼットに保存する</button>
         </form>
     </div>
 
-    <!-- 5. FAVORITES SCREEN -->
+    <!-- 5. お気に入り画面 -->
     <div id="screen-favorites" class="screen pb-32">
-        <header class="pt-12 px-6 mb-6 text-center"><h1 class="text-2xl font-bold italic uppercase tracking-tighter">Favorites</h1></header>
+        <header class="pt-12 px-6 mb-6 text-center"><h1 class="text-2xl font-bold italic uppercase tracking-tighter">お気に入り</h1></header>
         <div id="favorites-container" class="px-6 space-y-6"></div>
     </div>
 
-    <!-- 6. HISTORY SCREEN -->
+    <!-- 6. 着用履歴画面 -->
     <div id="screen-history" class="screen pb-32">
-        <header class="pt-12 px-6 mb-6 text-center"><h1 class="text-2xl font-bold italic uppercase tracking-tighter">Wear History</h1></header>
+        <header class="pt-12 px-6 mb-6 text-center"><h1 class="text-2xl font-bold italic uppercase tracking-tighter">着用履歴</h1></header>
         <div id="history-container" class="px-6 space-y-4"></div>
     </div>
 
-    <!-- 7. PROFILE (ME) SCREEN (Analysis + Settings) -->
+    <!-- 7. マイページ (分析 + プロフィール) -->
     <div id="screen-profile" class="screen pb-32">
-        <header class="pt-12 px-6 mb-8 text-center text-xl font-bold italic uppercase tracking-tighter">My Style Profile</header>
+        <header class="pt-12 px-6 mb-8 text-center text-xl font-bold italic uppercase tracking-tighter">マイスタイル分析</header>
         
-        <!-- AI Analysis Section -->
+        <!-- AI分析セクション -->
         <section id="analysis-section" class="px-6 space-y-6 mb-10">
             <div class="premium-card p-6 bg-black text-white">
                 <div class="flex justify-between items-start mb-4">
                     <div>
-                        <p class="text-[9px] opacity-60 uppercase tracking-[0.2em] mb-1">Style Analysis</p>
-                        <h3 id="style-type-label" class="text-2xl font-bold uppercase italic">Analyzing...</h3>
+                        <p class="text-[9px] opacity-60 uppercase tracking-[0.2em] mb-1">AIスタイル診断</p>
+                        <h3 id="style-type-label" class="text-2xl font-bold uppercase italic tracking-tight">分析中...</h3>
                     </div>
-                    <div id="analysis-lv" class="bg-white/10 px-3 py-1 rounded-full text-[9px] font-bold">LV. 01</div>
+                    <div id="analysis-lv" class="bg-white/10 px-3 py-1 rounded-full text-[9px] font-bold tracking-widest">LV. 01</div>
                 </div>
                 <p id="preference-summary" class="text-[11px] opacity-70 leading-relaxed italic"></p>
             </div>
 
             <div class="grid grid-cols-2 gap-4">
                 <div class="premium-card p-5">
-                    <p class="text-[8px] font-bold text-gray-400 uppercase tracking-widest mb-4">Fav Colors</p>
+                    <p class="text-[8px] font-bold text-gray-400 uppercase tracking-widest mb-4">好きなカラー</p>
                     <div id="analysis-colors" class="space-y-2"></div>
                 </div>
                 <div class="premium-card p-5">
-                    <p class="text-[8px] font-bold text-gray-400 uppercase tracking-widest mb-4">Fav Categories</p>
+                    <p class="text-[8px] font-bold text-gray-400 uppercase tracking-widest mb-4">好みのカテゴリー</p>
                     <div id="analysis-items" class="space-y-2"></div>
                 </div>
             </div>
 
             <div class="premium-card p-5 border-dashed border-2 border-gray-100 bg-transparent">
-                <p class="text-[8px] font-bold text-gray-900 uppercase tracking-widest mb-1">Next Rec</p>
+                <p class="text-[8px] font-bold text-gray-900 uppercase tracking-widest mb-1">次回の提案方針</p>
                 <p id="analysis-next" class="text-[10px] text-gray-500 italic"></p>
             </div>
         </section>
 
-        <!-- Profile Form -->
+        <!-- プロフィール設定 -->
         <section class="px-6 space-y-6">
-            <h3 class="text-sm font-bold uppercase px-2 italic">Profile Settings</h3>
+            <h3 class="text-sm font-bold uppercase px-2 italic tracking-widest">プロフィール設定</h3>
             <div class="grid grid-cols-2 gap-4">
-                <input type="number" id="p-height" placeholder="Height" class="w-full p-4 border border-gray-100 rounded-2xl font-bold bg-white text-sm">
-                <input type="number" id="p-weight" placeholder="Weight" class="w-full p-4 border border-gray-100 rounded-2xl font-bold bg-white text-sm">
+                <div class="space-y-1"><label class="text-[8px] font-bold text-gray-400 px-2">身長 (cm)</label><input type="number" id="p-height" class="w-full p-4 border border-gray-100 rounded-2xl font-bold bg-white text-sm focus:outline-none"></div>
+                <div class="space-y-1"><label class="text-[8px] font-bold text-gray-400 px-2">体重 (kg)</label><input type="number" id="p-weight" class="w-full p-4 border border-gray-100 rounded-2xl font-bold bg-white text-sm focus:outline-none"></div>
             </div>
             <div class="grid grid-cols-2 gap-2">
-                <input type="radio" name="bt" id="bt1" value="細身" class="hidden chip-input"><label for="bt1" class="text-center py-3 border rounded-xl text-[10px]">SLIM</label>
-                <input type="radio" name="bt" id="bt2" value="普通" class="hidden chip-input" checked><label for="bt2" class="text-center py-3 border rounded-xl text-[10px]">NORMAL</label>
-                <input type="radio" name="bt" id="bt3" value="がっちり" class="hidden chip-input"><label for="bt3" class="text-center py-3 border rounded-xl text-[10px]">SOLID</label>
-                <input type="radio" name="bt" id="bt4" value="ぽっちゃり" class="hidden chip-input"><label for="bt4" class="text-center py-3 border rounded-xl text-[10px]">SOFT</label>
+                <input type="radio" name="bt" id="bt1" value="細身" class="hidden chip-input"><label for="bt1" class="text-center py-3 border rounded-xl text-[10px]">細身</label>
+                <input type="radio" name="bt" id="bt2" value="普通" class="hidden chip-input" checked><label for="bt2" class="text-center py-3 border rounded-xl text-[10px]">普通</label>
+                <input type="radio" name="bt" id="bt3" value="がっちり" class="hidden chip-input"><label for="bt3" class="text-center py-3 border rounded-xl text-[10px]">がっちり</label>
+                <input type="radio" name="bt" id="bt4" value="ぽっちゃり" class="hidden chip-input"><label for="bt4" class="text-center py-3 border rounded-xl text-[10px]">ぽっちゃり</label>
             </div>
-            <button onclick="saveProfile()" class="btn-gradient w-full py-5 rounded-3xl text-white font-bold text-sm tracking-widest">SAVE PROFILE</button>
+            <button onclick="saveProfile()" class="btn-gradient w-full py-5 rounded-3xl text-white font-bold text-sm tracking-widest shadow-xl">プロフィールを保存</button>
         </section>
     </div>
 
-    <!-- BOTTOM NAVIGATION -->
+    <!-- 下部ナビゲーション -->
     <nav class="bottom-nav fixed bottom-0 left-0 right-0 max-w-md mx-auto h-24 px-4 flex justify-between items-center z-50">
         <button onclick="navigateTo('home')" id="nav-home" class="nav-btn flex flex-col items-center w-1/5 text-black">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" /></svg>
-            <span class="nav-text text-[8px] font-bold uppercase mt-1">Home</span>
+            <span class="nav-text text-[8px] font-bold uppercase mt-1">ホーム</span>
         </button>
         <button onclick="navigateTo('closet')" id="nav-closet" class="nav-btn flex flex-col items-center w-1/5 text-gray-300">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
-            <span class="nav-text text-[8px] uppercase mt-1">Closet</span>
+            <span class="nav-text text-[8px] uppercase mt-1">クローゼット</span>
         </button>
         <button onclick="navigateTo('favorites')" id="nav-favorites" class="nav-btn flex flex-col items-center w-1/5 text-gray-300">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
-            <span class="nav-text text-[8px] uppercase mt-1">Fav</span>
+            <span class="nav-text text-[8px] uppercase mt-1">お気に入り</span>
         </button>
         <button onclick="navigateTo('history')" id="nav-history" class="nav-btn flex flex-col items-center w-1/5 text-gray-300">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-            <span class="nav-text text-[8px] uppercase mt-1">History</span>
+            <span class="nav-text text-[8px] uppercase mt-1">着用履歴</span>
         </button>
         <button onclick="navigateTo('profile')" id="nav-profile" class="nav-btn flex flex-col items-center w-1/5 text-gray-300">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
-            <span class="nav-text text-[8px] uppercase mt-1">Me</span>
+            <span class="nav-text text-[8px] uppercase mt-1">マイページ</span>
         </button>
     </nav>
 
     <script>
-        // --- DATA STATE & PERSISTENCE ---
+        // --- データ管理と永続化 ---
         const appState = {
             profile: { height: 175, weight: 65, bt: "普通" },
             closetItems: [],
@@ -256,21 +254,24 @@
             currentImageData: null
         };
 
-        // Initialize from LocalStorage if exists
+        // ローカルストレージから読み込み
         function loadData() {
-            const saved = localStorage.getItem('FASHION_AI_DATA');
+            const saved = localStorage.getItem('FASHION_AI_DATA_V2');
             if (saved) {
                 const parsed = JSON.parse(saved);
                 Object.assign(appState, parsed);
+                // 初期表示用の値セット
+                document.getElementById('p-height').value = appState.profile.height;
+                document.getElementById('p-weight').value = appState.profile.weight;
             }
             updateLearningUI();
         }
 
         function saveData() {
-            localStorage.setItem('FASHION_AI_DATA', JSON.stringify(appState));
+            localStorage.setItem('FASHION_AI_DATA_V2', JSON.stringify(appState));
         }
 
-        // --- NAVIGATION ---
+        // --- 画面遷移 ---
         function navigateTo(screenId) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(`screen-${screenId}`).classList.add('active');
@@ -294,7 +295,7 @@
             window.scrollTo(0,0);
         }
 
-        // --- CLOSET MANAGEMENT ---
+        // --- クローゼット管理 ---
         function handleImageSelect(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -310,8 +311,8 @@
 
         function saveItem() {
             const cat = document.querySelector('input[name="cat"]:checked').value;
-            const color = document.getElementById('item-color').value.trim() || "White";
-            const brand = document.getElementById('item-brand').value.trim() || "Unknown";
+            const color = document.getElementById('item-color').value.trim() || "ホワイト";
+            const brand = document.getElementById('item-brand').value.trim() || "不明";
             const img = appState.currentImageData;
             if (!img) return alert("写真をアップロードしてください");
 
@@ -322,7 +323,7 @@
             navigateTo('closet');
         }
 
-        // --- SMART OUTFIT RECOMMENDATION ---
+        // --- スマートコーデ提案ロジック ---
         function generateSmartOutfit() {
             if (appState.closetItems.length < 2) {
                 alert("アイテムを2つ以上登録してください");
@@ -332,7 +333,6 @@
             const temp = parseInt(document.getElementById('input-temp').value);
             const purpose = document.getElementById('input-purpose').value;
 
-            // Pick 3 variations
             const results = [];
             for (let i = 0; i < 3; i++) {
                 results.push(smartCoordinate(weather, temp, purpose, results));
@@ -343,17 +343,15 @@
         }
 
         function smartCoordinate(weather, temp, purpose, previous) {
-            // Scoring algorithm
             const pool = [...appState.closetItems].map(item => {
                 let s = appState.itemScores[item.id] || 0;
-                
-                // Weather / Temp logic
+                // 天候と気温のロジック
                 if (weather === 'Rainy' && ['ジャケット','パンツ'].includes(item.category)) s += 5;
                 if (temp > 25 && item.category === 'Tシャツ') s += 10;
                 if (temp < 15 && item.category === 'ジャケット') s += 10;
                 if (temp > 25 && item.category === 'ジャケット') s -= 20;
 
-                // History penalty (Recently worn)
+                // 直近の着用履歴による重複回避
                 const isRecent = appState.history.slice(0, 3).some(h => h.items.some(hi => hi.id === item.id));
                 if (isRecent) s -= 15;
 
@@ -361,7 +359,6 @@
             });
 
             const sorted = pool.sort((a,b) => b._s - a._s);
-            
             const tops = sorted.filter(i => ["Tシャツ", "シャツ", "パーカー"].includes(i.category));
             const bottoms = sorted.filter(i => i.category === "パンツ");
             const outer = sorted.filter(i => i.category === "ジャケット");
@@ -378,11 +375,10 @@
             const main = outfits[0];
             const alts = outfits.slice(1);
 
-            // Main Card
             const mainEl = document.getElementById('main-outfit-container');
             mainEl.innerHTML = `
                 <div class="flex justify-between items-start mb-6">
-                    <h3 class="text-2xl font-bold uppercase italic">${purpose}</h3>
+                    <h3 class="text-2xl font-bold uppercase italic tracking-tight">${purpose}</h3>
                     <div class="text-right">
                         <p class="text-lg font-bold">${temp}°C ${weather === 'Sunny' ? '☀️' : (weather === 'Rainy' ? '☔' : '☁️')}</p>
                     </div>
@@ -390,72 +386,68 @@
                 <div class="flex gap-3 mb-8 overflow-x-auto pb-2 no-scrollbar">
                     ${main.map(it => `
                         <div class="w-32 flex-shrink-0">
-                            <div class="aspect-[3/4] bg-cover bg-center rounded-2xl border" style="background-image: url(${it.image})"></div>
+                            <div class="aspect-[3/4] bg-cover bg-center rounded-2xl border border-gray-50" style="background-image: url(${it.image})"></div>
                             <p class="text-[9px] font-bold mt-2 uppercase text-gray-400">${it.category}</p>
                             <p class="text-[10px] font-bold truncate">${it.brand}</p>
                         </div>
                     `).join('')}
                 </div>
-                <div class="grid grid-cols-2 gap-3">
-                    <button onclick='confirmWear("${purpose}", ${JSON.stringify(main).replace(/"/g, "&quot;")})' class="bg-black text-white py-4 rounded-2xl font-bold text-[10px] uppercase tracking-widest">今日これを着る</button>
-                    <div class="flex gap-1">
-                        <button onclick='rate(2, ${JSON.stringify(main.map(m=>m.id))}, "${purpose}")' class="flex-1 bg-gray-50 rounded-2xl flex items-center justify-center">❤️</button>
-                        <button onclick='rate(0, ${JSON.stringify(main.map(m=>m.id))}, "${purpose}")' class="flex-1 bg-gray-50 rounded-2xl flex items-center justify-center">😐</button>
-                        <button onclick='rate(-2, ${JSON.stringify(main.map(m=>m.id))}, "${purpose}")' class="flex-1 bg-gray-50 rounded-2xl flex items-center justify-center">👎</button>
+                <div class="grid grid-cols-1 gap-3">
+                    <button onclick='confirmWear("${purpose}", ${JSON.stringify(main).replace(/"/g, "&quot;")})' class="bg-black text-white py-4 rounded-2xl font-bold text-[10px] uppercase tracking-widest shadow-lg">今日これを着た</button>
+                    <div class="flex gap-2">
+                        <button onclick='rate(2, ${JSON.stringify(main.map(m=>m.id))}, "${purpose}")' class="flex-1 bg-gray-50 py-4 rounded-2xl flex flex-col items-center justify-center gap-1"><span class="text-lg">❤️</span><span class="text-[8px] font-bold text-gray-400">好き</span></button>
+                        <button onclick='rate(0, ${JSON.stringify(main.map(m=>m.id))}, "${purpose}")' class="flex-1 bg-gray-50 py-4 rounded-2xl flex flex-col items-center justify-center gap-1"><span class="text-lg">😐</span><span class="text-[8px] font-bold text-gray-400">普通</span></button>
+                        <button onclick='rate(-2, ${JSON.stringify(main.map(m=>m.id))}, "${purpose}")' class="flex-1 bg-gray-50 py-4 rounded-2xl flex flex-col items-center justify-center gap-1"><span class="text-lg">👎</span><span class="text-[8px] font-bold text-gray-400">好みじゃない</span></button>
                     </div>
                 </div>
             `;
 
-            // Reason
             document.getElementById('ai-reason-text').innerText = 
-                `今日は${temp}℃で${weather === 'Sunny' ? '晴れ' : '空模様が不安定'}なため、${temp > 22 ? '軽快さ' : '適度なレイヤード'}を重視しました。あなたの好みの${main[0].color}を基調としつつ、直近の着用アイテムを避けた選出です。`;
+                `今日は気温${temp}℃で、${weather === 'Sunny' ? '気持ちの良い晴天' : 'あいにくの空模様'}ですので、${temp > 22 ? '通気性の良い組み合わせ' : 'レイヤードで体温調節ができる構成'}にしました。あなたの好みの${main[0].color}を活かしつつ、直近の着用アイテムと被らない新鮮なスタイルです。`;
 
-            // Alternatives
             const altEl = document.getElementById('alternative-container');
             altEl.innerHTML = alts.map((outfit, i) => `
                 <div class="premium-card p-4 bg-white">
                     <div class="flex -space-x-4 mb-4">
                         ${outfit.slice(0, 3).map(it => `<div class="w-12 h-16 rounded-xl border-2 border-white bg-cover bg-center shadow-sm" style="background-image: url(${it.image})"></div>`).join('')}
                     </div>
-                    <button onclick='confirmWear("${purpose}", ${JSON.stringify(outfit).replace(/"/g, "&quot;")})' class="w-full py-2 bg-gray-100 rounded-xl text-[8px] font-bold uppercase">このコーデにする</button>
+                    <button onclick='confirmWear("${purpose}", ${JSON.stringify(outfit).replace(/"/g, "&quot;")})' class="w-full py-2 bg-gray-100 rounded-xl text-[8px] font-bold uppercase">これにする</button>
                 </div>
             `).join('');
         }
 
-        // --- FEEDBACK & HISTORY ---
+        // --- フィードバックと履歴 ---
         function rate(points, ids, purpose) {
             ids.forEach(id => appState.itemScores[id] = (appState.itemScores[id] || 0) + points);
             appState.purposeScores[purpose] = (appState.purposeScores[purpose] || 0) + points;
-            alert("フィードバックをAIに反映しました。");
+            alert("評価を保存しました。AIが好みを学習します。");
             updateLearningUI();
             saveData();
         }
 
         function confirmWear(purpose, items) {
-            appState.history.unshift({ id: Date.now(), date: new Date().toLocaleDateString(), purpose, items });
+            appState.history.unshift({ id: Date.now(), date: new Date().toLocaleDateString('ja-JP'), purpose, items });
             saveData();
             alert("着用履歴に保存しました。");
             navigateTo('history');
         }
 
-        // --- ANALYSIS ---
+        // --- AIスタイル分析 ---
         function runAIAnalysis() {
-            const hasData = Object.keys(appState.itemScores).length > 2;
+            const scoreCount = Object.keys(appState.itemScores).length;
             const styleLabel = document.getElementById('style-type-label');
             const summaryEl = document.getElementById('preference-summary');
             
-            if (!hasData) {
-                styleLabel.innerText = "Analyzing...";
-                summaryEl.innerText = "アイテムを評価すると、あなたの好みをAIが分析します。";
+            if (scoreCount < 3) {
+                styleLabel.innerText = "分析中...";
+                summaryEl.innerText = "アイテムを評価すると、あなたの好みをAIが詳しく分析します。";
                 return;
             }
 
-            // Style determination
             const topPurpose = Object.entries(appState.purposeScores).sort((a,b) => b[1] - a[1])[0];
-            const mapping = { '普段着':'Casual', '大人カジュアル':'Smart', '韓国ストリート':'Street', 'モード':'Mode', 'デート':'Elegant' };
-            styleLabel.innerText = mapping[topPurpose?.[0]] || "Mix Style";
+            const mapping = { '普段着':'ミニマル', '大人カジュアル':'スマート', '韓国ストリート':'ストリート', 'モード':'モード', 'デート':'エレガント' };
+            styleLabel.innerText = mapping[topPurpose?.[0]] || "ミックススタイル";
 
-            // Colors
             let colorMap = {};
             appState.closetItems.forEach(it => {
                 if((appState.itemScores[it.id] || 0) > 0) colorMap[it.color] = (colorMap[it.color] || 0) + 1;
@@ -463,18 +455,22 @@
             const topColors = Object.entries(colorMap).sort((a,b) => b[1] - a[1]).slice(0, 2);
             document.getElementById('analysis-colors').innerHTML = topColors.map(c => `<div class="flex items-center gap-2 text-[10px] font-bold"><span class="color-dot" style="background:${getHex(c[0])}"></span>${c[0]}</div>`).join('');
 
-            summaryEl.innerText = `あなたは${topPurpose ? topPurpose[0] : '落ち着いた'}スタイルを好み、${topColors[0] ? topColors[0][0] : '特定の'}カラーに反応する傾向があります。`;
-            document.getElementById('analysis-next').innerText = `次回の提案では、お気に入りの${topColors[0] ? topColors[0][0] : ''}アイテムを中心に構成します。`;
+            summaryEl.innerText = `あなたは${topPurpose ? topPurpose[0] : '落ち着いた'}スタイルを好む傾向にあり、特に${topColors[0] ? topColors[0][0] : '特定の'}カラーのアイテムを高評価しています。`;
+            document.getElementById('analysis-next').innerText = `次回の提案では、お気に入りの${topColors[0] ? topColors[0][0] : ''}アイテムを中心に、シルエットにこだわった構成を提案します。`;
         }
 
         function getHex(name) {
-            const m = { 'ブラック':'#000', 'ホワイト':'#FFF', 'グレー':'#888', 'ネイビー':'#000080', 'ベージュ':'#F5F5DC' };
+            const m = { 'ブラック':'#000', 'ホワイト':'#FFF', 'グレー':'#888', 'ネイビー':'#000080', 'ベージュ':'#F5F5DC', 'ブルー':'#3b82f6', 'レッド':'#ef4444' };
             return m[name] || '#DDD';
         }
 
-        // --- RENDERING HELPERS ---
+        // --- レンダリングヘルパー ---
         function renderCloset() {
             const grid = document.getElementById('closet-grid');
+            if (appState.closetItems.length === 0) {
+                grid.innerHTML = '<div class="col-span-2 py-20 text-center text-gray-300 text-xs">アイテムがありません</div>';
+                return;
+            }
             grid.innerHTML = appState.closetItems.map(it => `
                 <div class="premium-card p-3">
                     <div class="aspect-square bg-cover bg-center rounded-2xl mb-2" style="background-image: url(${it.image})"></div>
@@ -486,22 +482,25 @@
 
         function renderHistory() {
             const container = document.getElementById('history-container');
+            if (appState.history.length === 0) {
+                container.innerHTML = '<div class="text-center py-20 text-gray-400 text-xs">着用履歴はありません</div>';
+                return;
+            }
             container.innerHTML = appState.history.map(h => `
                 <div class="premium-card p-4 flex gap-4 items-center">
                     <div class="flex -space-x-4">
                         ${h.items.slice(0, 2).map(i => `<div class="w-10 h-14 rounded-lg border-2 border-white bg-cover bg-center" style="background-image: url(${i.image})"></div>`).join('')}
                     </div>
                     <div>
-                        <p class="text-[8px] font-bold text-gray-400 uppercase">${h.date}</p>
-                        <p class="font-bold text-xs uppercase italic">${h.purpose}</p>
+                        <p class="text-[8px] font-bold text-gray-400 uppercase tracking-widest">${h.date}</p>
+                        <p class="font-bold text-xs italic">${h.purpose}</p>
                     </div>
                 </div>
             `).join('');
         }
 
         function renderFavorites() {
-            // Similar to history but for favorites state
-            document.getElementById('favorites-container').innerHTML = '<p class="text-center text-xs text-gray-400 py-20">お気に入りのコーデはありません</p>';
+            document.getElementById('favorites-container').innerHTML = '<p class="text-center text-xs text-gray-400 py-20">お気に入りのコーデ機能は近日アップデート予定です</p>';
         }
 
         function renderHomePreview() {
@@ -511,7 +510,7 @@
                     <div class="premium-card p-2"><div class="aspect-[4/5] bg-cover bg-center rounded-2xl" style="background-image: url(${it.image})"></div></div>
                 `).join('');
             } else {
-                container.innerHTML = '<div class="col-span-2 py-12 text-center bg-white rounded-[32px] border border-dashed border-gray-200 text-gray-400 text-xs uppercase tracking-widest">Closet is Empty</div>';
+                container.innerHTML = '<div class="col-span-2 py-12 text-center bg-white rounded-[32px] border border-dashed border-gray-200 text-gray-400 text-[10px] uppercase tracking-widest">クローゼットが空です</div>';
             }
         }
 
@@ -520,7 +519,7 @@
             const level = Math.floor(scoreCount / 5) + 1;
             const badge = document.getElementById('learning-level-home');
             const badge2 = document.getElementById('analysis-lv');
-            if(badge) badge.innerText = `LV. ${String(level).padStart(2, '0')}`;
+            if(badge) badge.innerText = `学習レベル: ${String(level).padStart(2, '0')}`;
             if(badge2) badge2.innerText = `LV. ${String(level).padStart(2, '0')}`;
         }
 
@@ -529,10 +528,10 @@
             appState.profile.weight = document.getElementById('p-weight').value;
             appState.profile.bt = document.querySelector('input[name="bt"]:checked').value;
             saveData();
-            alert("プロフィールを保存しました");
+            alert("プロフィールを更新しました");
         }
 
-        // Init
+        // 初期化
         loadData();
     </script>
 </body>
