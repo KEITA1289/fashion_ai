@@ -7,158 +7,146 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&family=Noto+Sans+JP:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #FAFAFA; --card: #FFFFFF; --accent: #000000; --text-main: #1A1A1A; --text-sub: #8E8E93; }
+        :root { --bg: #FAFAFA; --card: #FFFFFF; --accent: #000000; --text-main: #1A1A1A; }
         body { font-family: 'Inter', 'Noto Sans JP', sans-serif; background-color: var(--bg); color: var(--text-main); -webkit-tap-highlight-color: transparent; }
         .premium-card { background: var(--card); border-radius: 32px; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03); border: 1px solid rgba(0,0,0,0.02); overflow: hidden; }
         .bottom-nav { backdrop-filter: blur(20px); background: rgba(255, 255, 255, 0.85); border-top: 1px solid rgba(0,0,0,0.05); }
         .btn-gradient { background: linear-gradient(135deg, #1A1A1A 0%, #4A4A4A 100%); transition: all 0.3s ease; }
-        .btn-gradient:active { transform: scale(0.98); opacity: 0.9; }
         .screen { display: none; min-height: 100vh; animation: fadeIn 0.4s ease; }
         .screen.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-        .weather-btn:checked + label { background-color: var(--accent); color: #FFF; border-color: var(--accent); }
         .chip-input:checked + label { background-color: var(--accent); color: #FFF; border-color: var(--accent); }
         .no-scrollbar::-webkit-scrollbar { display: none; }
-        .color-dot { width: 10px; height: 10px; border-radius: 50%; border: 1px solid #EEE; }
+        .img-container { position: relative; width: 100%; padding-top: 125%; background-color: #f3f4f6; }
+        .img-container img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
     </style>
 </head>
 <body class="max-w-md mx-auto relative min-h-screen pb-24">
 
     <!-- 1. ホーム画面 -->
-    <div id="screen-home" class="screen active pb-10">
+    <div id="screen-home" class="screen active">
         <header class="pt-12 px-6 mb-8 text-center">
             <h1 class="text-3xl font-bold tracking-tighter mb-1 italic uppercase">Fashion AI</h1>
-            <p class="text-[9px] text-gray-400 font-light tracking-[0.4em] uppercase">AIスタイリング・エンジン</p>
+            <p class="text-[9px] text-gray-400 font-light tracking-[0.4em] uppercase">AIパーソナルスタイリスト</p>
         </header>
 
-        <section class="px-6 mb-8">
-            <div class="premium-card p-6">
-                <div class="flex items-center justify-between mb-6">
-                    <h2 class="text-sm font-bold flex items-center gap-2">今日のコンディション</h2>
-                    <div id="learning-level-home" class="text-[9px] font-bold bg-gray-100 px-2 py-0.5 rounded-full uppercase text-gray-500">学習レベル: 01</div>
-                </div>
-                
-                <div class="space-y-6">
-                    <!-- 天気選択 -->
-                    <div class="flex justify-between gap-2">
-                        <input type="radio" name="weather" id="w-sunny" value="Sunny" class="hidden weather-btn" checked>
-                        <label for="w-sunny" class="flex-1 text-center py-3 border border-gray-100 rounded-2xl text-lg cursor-pointer">☀️</label>
-                        <input type="radio" name="weather" id="w-cloudy" value="Cloudy" class="hidden weather-btn">
-                        <label for="w-cloudy" class="flex-1 text-center py-3 border border-gray-100 rounded-2xl text-lg cursor-pointer">☁️</label>
-                        <input type="radio" name="weather" id="w-rainy" value="Rainy" class="hidden weather-btn">
-                        <label for="w-rainy" class="flex-1 text-center py-3 border border-gray-100 rounded-2xl text-lg cursor-pointer">☔</label>
-                        <input type="radio" name="weather" id="w-snowy" value="Snowy" class="hidden weather-btn">
-                        <label for="w-snowy" class="flex-1 text-center py-3 border border-gray-100 rounded-2xl text-lg cursor-pointer">❄️</label>
-                    </div>
-
-                    <!-- 入力項目 -->
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="space-y-1">
-                            <label class="text-[8px] font-bold text-gray-400 uppercase tracking-widest px-2">予想気温 (°C)</label>
-                            <input type="number" id="input-temp" value="22" class="w-full p-4 bg-gray-50 rounded-2xl font-bold focus:outline-none">
-                        </div>
-                        <div class="space-y-1">
-                            <label class="text-[8px] font-bold text-gray-400 uppercase tracking-widest px-2">今日の目的</label>
-                            <select id="input-purpose" class="w-full p-4 bg-gray-50 rounded-2xl font-bold text-xs focus:outline-none appearance-none">
-                                <option value="普段着">普段着</option>
-                                <option value="デート">デート</option>
-                                <option value="大人カジュアル">大人カジュアル</option>
-                                <option value="旅行">旅行</option>
-                                <option value="モード">モード</option>
-                                <option value="韓国ストリート">韓国ストリート</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <button onclick="generateSmartOutfit()" class="btn-gradient w-full py-5 rounded-3xl text-white font-bold text-sm shadow-xl flex items-center justify-center gap-2 tracking-widest">
-                        今日のベストコーデを提案
-                    </button>
-                </div>
+        <section class="px-6 mb-10">
+            <div class="premium-card p-8 text-center bg-black text-white">
+                <h2 class="text-lg font-bold mb-2">最高の自分に出会おう</h2>
+                <p class="text-[10px] opacity-60 mb-8">AIがあなたのクローゼットから最適なコーデを提案します</p>
+                <button onclick="navigateTo('purpose')" class="w-full py-5 bg-white text-black rounded-3xl font-bold text-sm tracking-widest shadow-xl">
+                    今日のコーデを作る
+                </button>
             </div>
         </section>
 
         <section class="px-6">
             <div class="flex justify-between items-end mb-4">
-                <h2 class="text-xl font-bold">クローゼット</h2>
+                <h2 class="text-xl font-bold italic">Latest Items</h2>
                 <button onclick="navigateTo('closet')" class="text-[10px] font-bold text-gray-400 uppercase underline">すべて見る</button>
             </div>
-            <div id="home-closet-preview" class="grid grid-cols-2 gap-4"></div>
+            <div id="home-closet-preview" class="grid grid-cols-2 gap-4">
+                <!-- クローゼットプレビュー -->
+            </div>
         </section>
     </div>
 
-    <!-- 2. 提案結果画面 -->
-    <div id="screen-results" class="screen pb-32">
-        <header class="pt-12 px-6 mb-6 flex justify-between items-center">
-            <button onclick="navigateTo('home')"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg></button>
-            <h2 class="font-bold tracking-tighter italic text-xl uppercase">ベストな組み合わせ</h2>
-            <div class="w-6"></div>
+    <!-- 2. 目的選択画面 -->
+    <div id="screen-purpose" class="screen pb-32">
+        <header class="pt-12 px-6 mb-8 flex items-center">
+            <button onclick="navigateTo('home')" class="mr-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M15 19l-7-7 7-7" /></svg></button>
+            <h1 class="text-2xl font-bold">目的を選択</h1>
         </header>
-
-        <div class="px-6 space-y-8">
-            <!-- メインコーデ -->
-            <div id="main-outfit-container" class="premium-card p-6 shadow-2xl"></div>
-
-            <!-- AIの提案理由 -->
-            <div class="px-2">
-                <h3 class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-2">AIの提案理由</h3>
-                <p id="ai-reason-text" class="text-[11px] text-gray-600 leading-relaxed italic"></p>
-            </div>
-
-            <!-- 他の候補 -->
-            <div class="space-y-4">
-                <h3 class="text-[9px] font-bold text-gray-400 uppercase tracking-widest px-2">他の候補</h3>
-                <div id="alternative-container" class="grid grid-cols-2 gap-4"></div>
-            </div>
-
-            <button onclick="generateSmartOutfit()" class="w-full py-4 bg-white border border-gray-100 rounded-2xl text-[10px] font-bold uppercase tracking-widest shadow-sm">
-                🔄 もう一度提案する
-            </button>
+        <div class="px-6 grid grid-cols-2 gap-4" id="purpose-grid">
+            <!-- 目的ボタン -->
         </div>
     </div>
 
-    <!-- 3. クローゼット画面 -->
-    <div id="screen-closet" class="screen pb-32">
+    <!-- 3. コーデ提案結果画面 -->
+    <div id="screen-results" class="screen pb-32">
         <header class="pt-12 px-6 mb-6 flex justify-between items-center">
-            <h1 class="text-2xl font-bold uppercase italic tracking-tighter">クローゼット</h1>
-            <button onclick="navigateTo('add-item')" class="bg-black text-white p-3 rounded-full shadow-lg"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg></button>
+            <button onclick="navigateTo('purpose')"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M15 19l-7-7 7-7" /></svg></button>
+            <h2 id="result-title" class="font-bold italic text-xl uppercase">Best Choice</h2>
+            <div class="w-6"></div>
         </header>
-        <div id="closet-grid" class="px-6 grid grid-cols-2 gap-4"></div>
+
+        <div class="px-6 space-y-6">
+            <div id="main-outfit-display" class="premium-card p-6 space-y-6">
+                <!-- 生成されたコーデ -->
+            </div>
+
+            <div class="flex flex-col gap-3">
+                <button onclick="confirmWearToday()" class="btn-gradient w-full py-5 rounded-3xl text-white font-bold text-sm shadow-xl flex items-center justify-center gap-2">
+                    👕 今日着た
+                </button>
+                <div class="grid grid-cols-3 gap-2">
+                    <button onclick="rateOutfit(2)" class="bg-white border py-4 rounded-2xl text-xl">❤️</button>
+                    <button onclick="rateOutfit(0)" class="bg-white border py-4 rounded-2xl text-xl">😐</button>
+                    <button onclick="rateOutfit(-2)" class="bg-white border py-4 rounded-2xl text-xl">👎</button>
+                </div>
+                <button onclick="generateOutfit()" class="w-full py-4 bg-gray-100 rounded-2xl text-[10px] font-bold uppercase tracking-widest text-gray-500">
+                    🔄 別のコーデを見る
+                </button>
+            </div>
+        </div>
     </div>
 
-    <!-- 4. アイテム登録画面 -->
+    <!-- 4. クローゼット画面 -->
+    <div id="screen-closet" class="screen pb-32">
+        <header class="pt-12 px-6 mb-6 flex justify-between items-center">
+            <h1 class="text-2xl font-bold italic uppercase tracking-tighter">クローゼット</h1>
+            <button onclick="navigateTo('add-item')" class="bg-black text-white px-5 py-3 rounded-full shadow-lg font-bold text-xs">+ 服を追加</button>
+        </header>
+        <div id="closet-grid" class="px-6 grid grid-cols-2 gap-4">
+            <!-- クローゼット一覧 -->
+        </div>
+    </div>
+
+    <!-- 5. アイテム登録画面 -->
     <div id="screen-add-item" class="screen pb-32">
         <header class="pt-12 px-6 mb-6 flex items-center gap-4">
             <button onclick="navigateTo('closet')"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M15 19l-7-7 7-7" /></svg></button>
-            <h1 class="text-xl font-bold uppercase tracking-tighter">新しいアイテムを登録</h1>
+            <h1 class="text-xl font-bold uppercase tracking-tighter">アイテム登録</h1>
         </header>
         <form id="add-item-form" class="px-6 space-y-6">
-            <div id="image-preview" class="h-72 bg-gray-100 rounded-[32px] flex items-center justify-center cursor-pointer bg-cover bg-center border-2 border-dashed border-gray-200" onclick="document.getElementById('file-input').click()">タップして写真をアップロード</div>
+            <div id="image-preview" class="h-72 bg-gray-100 rounded-[32px] flex items-center justify-center cursor-pointer bg-cover bg-center border-2 border-dashed border-gray-200" onclick="document.getElementById('file-input').click()">写真をアップロード</div>
             <input type="file" id="file-input" class="hidden" accept="image/*" onchange="handleImageSelect(event)">
             
             <div class="space-y-4">
+                <label class="text-[9px] font-bold text-gray-400 uppercase tracking-widest px-2">アイテム名</label>
+                <input type="text" id="item-name" class="w-full p-4 border rounded-2xl text-sm font-bold bg-white focus:outline-none">
+            </div>
+
+            <div class="space-y-4">
                 <label class="text-[9px] font-bold text-gray-400 uppercase tracking-widest px-2">カテゴリー</label>
                 <div class="grid grid-cols-3 gap-2">
-                    <input type="radio" name="cat" id="cat1" value="Tシャツ" class="hidden chip-input" checked><label for="cat1" class="text-center py-2 border rounded-xl text-[10px]">Tシャツ</label>
-                    <input type="radio" name="cat" id="cat2" value="シャツ" class="hidden chip-input"><label for="cat2" class="text-center py-2 border rounded-xl text-[10px]">シャツ</label>
-                    <input type="radio" name="cat" id="cat3" value="ジャケット" class="hidden chip-input"><label for="cat3" class="text-center py-2 border rounded-xl text-[10px]">ジャケット</label>
-                    <input type="radio" name="cat" id="cat4" value="パンツ" class="hidden chip-input"><label for="cat4" class="text-center py-2 border rounded-xl text-[10px]">パンツ</label>
-                    <input type="radio" name="cat" id="cat5" value="パーカー" class="hidden chip-input"><label for="cat5" class="text-center py-2 border rounded-xl text-[10px]">パーカー</label>
-                    <input type="radio" name="cat" id="cat6" value="スニーカー" class="hidden chip-input"><label for="cat6" class="text-center py-2 border rounded-xl text-[10px]">シューズ</label>
+                    <input type="radio" name="cat" id="cat1" value="トップス" class="hidden chip-input" checked><label for="cat1" class="text-center py-3 border rounded-xl text-[10px]">トップス</label>
+                    <input type="radio" name="cat" id="cat2" value="ボトムス" class="hidden chip-input"><label for="cat2" class="text-center py-3 border rounded-xl text-[10px]">ボトムス</label>
+                    <input type="radio" name="cat" id="cat3" value="アウター" class="hidden chip-input"><label for="cat3" class="text-center py-3 border rounded-xl text-[10px]">アウター</label>
+                    <input type="radio" name="cat" id="cat4" value="シューズ" class="hidden chip-input"><label for="cat4" class="text-center py-3 border rounded-xl text-[10px]">シューズ</label>
+                    <input type="radio" name="cat" id="cat5" value="バッグ" class="hidden chip-input"><label for="cat5" class="text-center py-3 border rounded-xl text-[10px]">バッグ</label>
+                    <input type="radio" name="cat" id="cat6" value="アクセサリー" class="hidden chip-input"><label for="cat6" class="text-center py-3 border rounded-xl text-[10px]">アクセ</label>
                 </div>
             </div>
 
-            <div class="flex gap-4">
-                <input type="text" id="item-color" placeholder="カラー (例: ブラック)" class="flex-1 p-4 bg-white border border-gray-100 rounded-2xl text-xs font-bold focus:outline-none">
-                <input type="text" id="item-brand" placeholder="ブランド" class="flex-1 p-4 bg-white border border-gray-100 rounded-2xl text-xs font-bold focus:outline-none">
+            <div class="grid grid-cols-2 gap-4">
+                <div class="space-y-4">
+                    <label class="text-[9px] font-bold text-gray-400 uppercase tracking-widest px-2">カラー</label>
+                    <input type="text" id="item-color" placeholder="例: ブラック" class="w-full p-4 border rounded-2xl text-sm font-bold bg-white focus:outline-none">
+                </div>
+                <div class="space-y-4">
+                    <label class="text-[9px] font-bold text-gray-400 uppercase tracking-widest px-2">季節</label>
+                    <select id="item-season" class="w-full p-4 border rounded-2xl text-sm font-bold bg-white focus:outline-none appearance-none">
+                        <option value="春">春</option>
+                        <option value="夏">夏</option>
+                        <option value="秋">秋</option>
+                        <option value="冬">冬</option>
+                    </select>
+                </div>
             </div>
-            <button type="button" onclick="saveItem()" class="btn-gradient w-full py-5 rounded-3xl text-white font-bold text-sm tracking-widest shadow-xl">クローゼットに保存する</button>
-        </form>
-    </div>
 
-    <!-- 5. お気に入り画面 -->
-    <div id="screen-favorites" class="screen pb-32">
-        <header class="pt-12 px-6 mb-6 text-center"><h1 class="text-2xl font-bold italic uppercase tracking-tighter">お気に入り</h1></header>
-        <div id="favorites-container" class="px-6 space-y-6"></div>
+            <button type="button" onclick="saveItemToCloset()" class="btn-gradient w-full py-5 rounded-3xl text-white font-bold text-sm tracking-widest shadow-xl uppercase">クローゼットに追加</button>
+        </form>
     </div>
 
     <!-- 6. 着用履歴画面 -->
@@ -167,108 +155,74 @@
         <div id="history-container" class="px-6 space-y-4"></div>
     </div>
 
-    <!-- 7. マイページ (分析 + プロフィール) -->
+    <!-- 7. マイページ画面 -->
     <div id="screen-profile" class="screen pb-32">
-        <header class="pt-12 px-6 mb-8 text-center text-xl font-bold italic uppercase tracking-tighter">マイスタイル分析</header>
-        
-        <!-- AI分析セクション -->
-        <section id="analysis-section" class="px-6 space-y-6 mb-10">
-            <div class="premium-card p-6 bg-black text-white">
-                <div class="flex justify-between items-start mb-4">
-                    <div>
-                        <p class="text-[9px] opacity-60 uppercase tracking-[0.2em] mb-1">AIスタイル診断</p>
-                        <h3 id="style-type-label" class="text-2xl font-bold uppercase italic tracking-tight">分析中...</h3>
-                    </div>
-                    <div id="analysis-lv" class="bg-white/10 px-3 py-1 rounded-full text-[9px] font-bold tracking-widest">LV. 01</div>
-                </div>
-                <p id="preference-summary" class="text-[11px] opacity-70 leading-relaxed italic"></p>
+        <header class="pt-12 px-6 mb-8 text-center text-xl font-bold italic uppercase tracking-tighter">My Profile</header>
+        <div class="px-6 space-y-6">
+            <div class="premium-card p-8 bg-black text-white text-center">
+                <p class="text-[10px] opacity-60 uppercase tracking-widest mb-1">現在の学習レベル</p>
+                <h3 id="display-lv" class="text-3xl font-bold italic">LV. 01</h3>
             </div>
-
-            <div class="grid grid-cols-2 gap-4">
-                <div class="premium-card p-5">
-                    <p class="text-[8px] font-bold text-gray-400 uppercase tracking-widest mb-4">好きなカラー</p>
-                    <div id="analysis-colors" class="space-y-2"></div>
-                </div>
-                <div class="premium-card p-5">
-                    <p class="text-[8px] font-bold text-gray-400 uppercase tracking-widest mb-4">好みのカテゴリー</p>
-                    <div id="analysis-items" class="space-y-2"></div>
+            <!-- プロフィール編集、好み分析など (既存ロジック用) -->
+            <div class="premium-card p-6">
+                <h4 class="text-sm font-bold mb-4 italic">スタイル設定</h4>
+                <div class="grid grid-cols-2 gap-4">
+                    <input type="number" id="p-height" placeholder="身長" class="w-full p-4 border rounded-2xl text-sm bg-gray-50 focus:outline-none">
+                    <input type="number" id="p-weight" placeholder="体重" class="w-full p-4 border rounded-2xl text-sm bg-gray-50 focus:outline-none">
                 </div>
             </div>
-
-            <div class="premium-card p-5 border-dashed border-2 border-gray-100 bg-transparent">
-                <p class="text-[8px] font-bold text-gray-900 uppercase tracking-widest mb-1">次回の提案方針</p>
-                <p id="analysis-next" class="text-[10px] text-gray-500 italic"></p>
-            </div>
-        </section>
-
-        <!-- プロフィール設定 -->
-        <section class="px-6 space-y-6">
-            <h3 class="text-sm font-bold uppercase px-2 italic tracking-widest">プロフィール設定</h3>
-            <div class="grid grid-cols-2 gap-4">
-                <div class="space-y-1"><label class="text-[8px] font-bold text-gray-400 px-2">身長 (cm)</label><input type="number" id="p-height" class="w-full p-4 border border-gray-100 rounded-2xl font-bold bg-white text-sm focus:outline-none"></div>
-                <div class="space-y-1"><label class="text-[8px] font-bold text-gray-400 px-2">体重 (kg)</label><input type="number" id="p-weight" class="w-full p-4 border border-gray-100 rounded-2xl font-bold bg-white text-sm focus:outline-none"></div>
-            </div>
-            <div class="grid grid-cols-2 gap-2">
-                <input type="radio" name="bt" id="bt1" value="細身" class="hidden chip-input"><label for="bt1" class="text-center py-3 border rounded-xl text-[10px]">細身</label>
-                <input type="radio" name="bt" id="bt2" value="普通" class="hidden chip-input" checked><label for="bt2" class="text-center py-3 border rounded-xl text-[10px]">普通</label>
-                <input type="radio" name="bt" id="bt3" value="がっちり" class="hidden chip-input"><label for="bt3" class="text-center py-3 border rounded-xl text-[10px]">がっちり</label>
-                <input type="radio" name="bt" id="bt4" value="ぽっちゃり" class="hidden chip-input"><label for="bt4" class="text-center py-3 border rounded-xl text-[10px]">ぽっちゃり</label>
-            </div>
-            <button onclick="saveProfile()" class="btn-gradient w-full py-5 rounded-3xl text-white font-bold text-sm tracking-widest shadow-xl">プロフィールを保存</button>
-        </section>
+        </div>
     </div>
 
-    <!-- 下部ナビゲーション -->
+    <!-- 5項目ナビゲーション -->
     <nav class="bottom-nav fixed bottom-0 left-0 right-0 max-w-md mx-auto h-24 px-4 flex justify-between items-center z-50">
         <button onclick="navigateTo('home')" id="nav-home" class="nav-btn flex flex-col items-center w-1/5 text-black">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" /></svg>
-            <span class="nav-text text-[8px] font-bold uppercase mt-1">ホーム</span>
+            <span class="text-[8px] font-bold uppercase mt-1">Home</span>
         </button>
         <button onclick="navigateTo('closet')" id="nav-closet" class="nav-btn flex flex-col items-center w-1/5 text-gray-300">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
-            <span class="nav-text text-[8px] uppercase mt-1">クローゼット</span>
+            <span class="text-[8px] font-bold uppercase mt-1">Closet</span>
         </button>
         <button onclick="navigateTo('favorites')" id="nav-favorites" class="nav-btn flex flex-col items-center w-1/5 text-gray-300">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
-            <span class="nav-text text-[8px] uppercase mt-1">お気に入り</span>
+            <span class="text-[8px] font-bold uppercase mt-1">Fav</span>
         </button>
         <button onclick="navigateTo('history')" id="nav-history" class="nav-btn flex flex-col items-center w-1/5 text-gray-300">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-            <span class="nav-text text-[8px] uppercase mt-1">着用履歴</span>
+            <span class="text-[8px] font-bold uppercase mt-1">History</span>
         </button>
         <button onclick="navigateTo('profile')" id="nav-profile" class="nav-btn flex flex-col items-center w-1/5 text-gray-300">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
-            <span class="nav-text text-[8px] uppercase mt-1">マイページ</span>
+            <span class="text-[8px] font-bold uppercase mt-1">Me</span>
         </button>
     </nav>
 
     <script>
-        // --- データ管理と永続化 ---
+        // --- データ管理 ---
         const appState = {
-            profile: { height: 175, weight: 65, bt: "普通" },
-            closetItems: [],
-            favorites: [],
+            closetItems: [], // {id, name, cat, color, season, image}
             history: [],
-            itemScores: {}, // { itemId: score }
-            purposeScores: {}, // { purpose: score }
+            itemScores: {}, // {itemId: score}
+            learningLv: 1,
+            selectedPurpose: "",
+            currentOutfit: [],
             currentImageData: null
         };
 
-        // ローカルストレージから読み込み
+        const PURPOSES = ["デート", "旅行", "仕事", "カジュアル", "雨の日", "暑い日", "寒い日", "おしゃれして出かけたい", "おまかせ"];
+
         function loadData() {
-            const saved = localStorage.getItem('FASHION_AI_DATA_V2');
+            const saved = localStorage.getItem('FASHION_AI_V3');
             if (saved) {
                 const parsed = JSON.parse(saved);
                 Object.assign(appState, parsed);
-                // 初期表示用の値セット
-                document.getElementById('p-height').value = appState.profile.height;
-                document.getElementById('p-weight').value = appState.profile.weight;
             }
-            updateLearningUI();
+            updateUI();
         }
 
         function saveData() {
-            localStorage.setItem('FASHION_AI_DATA_V2', JSON.stringify(appState));
+            localStorage.setItem('FASHION_AI_V3', JSON.stringify(appState));
         }
 
         // --- 画面遷移 ---
@@ -280,25 +234,22 @@
             if (mainTabs.includes(screenId)) {
                 document.querySelectorAll('.nav-btn').forEach(btn => {
                     btn.classList.replace('text-black', 'text-gray-300');
-                    btn.querySelector('span').classList.remove('font-bold');
                 });
                 const activeNav = document.getElementById(`nav-${screenId}`);
                 activeNav.classList.replace('text-gray-300', 'text-black');
-                activeNav.querySelector('span').classList.add('font-bold');
             }
-            
             if (screenId === 'closet') renderCloset();
-            if (screenId === 'home') renderHomePreview();
-            if (screenId === 'favorites') renderFavorites();
+            if (screenId === 'home') renderHome();
             if (screenId === 'history') renderHistory();
-            if (screenId === 'profile') runAIAnalysis();
+            if (screenId === 'purpose') renderPurposeSelection();
             window.scrollTo(0,0);
         }
 
-        // --- クローゼット管理 ---
+        // --- クローゼット機能 ---
         function handleImageSelect(event) {
             const file = event.target.files[0];
             if (!file) return;
+            // データ削減のためリサイズ処理等は本番では必要だが、今回はシンプルにbase64化
             const reader = new FileReader();
             reader.onload = (e) => {
                 appState.currentImageData = e.target.result;
@@ -309,229 +260,157 @@
             reader.readAsDataURL(file);
         }
 
-        function saveItem() {
+        function saveItemToCloset() {
+            const name = document.getElementById('item-name').value.trim();
             const cat = document.querySelector('input[name="cat"]:checked').value;
-            const color = document.getElementById('item-color').value.trim() || "ホワイト";
-            const brand = document.getElementById('item-brand').value.trim() || "不明";
-            const img = appState.currentImageData;
-            if (!img) return alert("写真をアップロードしてください");
+            const color = document.getElementById('item-color').value.trim();
+            const season = document.getElementById('item-season').value;
+            const image = appState.currentImageData;
 
-            appState.closetItems.unshift({ id: Date.now(), category: cat, color, brand, image: img });
+            if (!name || !image) return alert("名前と写真を入力してください");
+
+            appState.closetItems.unshift({ id: Date.now(), name, cat, color, season, image });
             appState.currentImageData = null;
             document.getElementById('add-item-form').reset();
             saveData();
             navigateTo('closet');
         }
 
-        // --- スマートコーデ提案ロジック ---
-        function generateSmartOutfit() {
-            if (appState.closetItems.length < 2) {
-                alert("アイテムを2つ以上登録してください");
-                return navigateTo('closet');
-            }
-            const weather = document.querySelector('input[name="weather"]:checked').value;
-            const temp = parseInt(document.getElementById('input-temp').value);
-            const purpose = document.getElementById('input-purpose').value;
-
-            const results = [];
-            for (let i = 0; i < 3; i++) {
-                results.push(smartCoordinate(weather, temp, purpose, results));
-            }
-
-            renderResults(results, weather, temp, purpose);
-            navigateTo('results');
-        }
-
-        function smartCoordinate(weather, temp, purpose, previous) {
-            const pool = [...appState.closetItems].map(item => {
-                let s = appState.itemScores[item.id] || 0;
-                // 天候と気温のロジック
-                if (weather === 'Rainy' && ['ジャケット','パンツ'].includes(item.category)) s += 5;
-                if (temp > 25 && item.category === 'Tシャツ') s += 10;
-                if (temp < 15 && item.category === 'ジャケット') s += 10;
-                if (temp > 25 && item.category === 'ジャケット') s -= 20;
-
-                // 直近の着用履歴による重複回避
-                const isRecent = appState.history.slice(0, 3).some(h => h.items.some(hi => hi.id === item.id));
-                if (isRecent) s -= 15;
-
-                return { ...item, _s: s };
-            });
-
-            const sorted = pool.sort((a,b) => b._s - a._s);
-            const tops = sorted.filter(i => ["Tシャツ", "シャツ", "パーカー"].includes(i.category));
-            const bottoms = sorted.filter(i => i.category === "パンツ");
-            const outer = sorted.filter(i => i.category === "ジャケット");
-            const shoes = sorted.filter(i => i.category === "スニーカー");
-
-            const outfit = [tops[0], bottoms[0]];
-            if (temp < 20 && outer[0]) outfit.push(outer[0]);
-            if (shoes[0]) outfit.push(shoes[0]);
-
-            return outfit.filter(Boolean);
-        }
-
-        function renderResults(outfits, weather, temp, purpose) {
-            const main = outfits[0];
-            const alts = outfits.slice(1);
-
-            const mainEl = document.getElementById('main-outfit-container');
-            mainEl.innerHTML = `
-                <div class="flex justify-between items-start mb-6">
-                    <h3 class="text-2xl font-bold uppercase italic tracking-tight">${purpose}</h3>
-                    <div class="text-right">
-                        <p class="text-lg font-bold">${temp}°C ${weather === 'Sunny' ? '☀️' : (weather === 'Rainy' ? '☔' : '☁️')}</p>
-                    </div>
-                </div>
-                <div class="flex gap-3 mb-8 overflow-x-auto pb-2 no-scrollbar">
-                    ${main.map(it => `
-                        <div class="w-32 flex-shrink-0">
-                            <div class="aspect-[3/4] bg-cover bg-center rounded-2xl border border-gray-50" style="background-image: url(${it.image})"></div>
-                            <p class="text-[9px] font-bold mt-2 uppercase text-gray-400">${it.category}</p>
-                            <p class="text-[10px] font-bold truncate">${it.brand}</p>
-                        </div>
-                    `).join('')}
-                </div>
-                <div class="grid grid-cols-1 gap-3">
-                    <button onclick='confirmWear("${purpose}", ${JSON.stringify(main).replace(/"/g, "&quot;")})' class="bg-black text-white py-4 rounded-2xl font-bold text-[10px] uppercase tracking-widest shadow-lg">今日これを着た</button>
-                    <div class="flex gap-2">
-                        <button onclick='rate(2, ${JSON.stringify(main.map(m=>m.id))}, "${purpose}")' class="flex-1 bg-gray-50 py-4 rounded-2xl flex flex-col items-center justify-center gap-1"><span class="text-lg">❤️</span><span class="text-[8px] font-bold text-gray-400">好き</span></button>
-                        <button onclick='rate(0, ${JSON.stringify(main.map(m=>m.id))}, "${purpose}")' class="flex-1 bg-gray-50 py-4 rounded-2xl flex flex-col items-center justify-center gap-1"><span class="text-lg">😐</span><span class="text-[8px] font-bold text-gray-400">普通</span></button>
-                        <button onclick='rate(-2, ${JSON.stringify(main.map(m=>m.id))}, "${purpose}")' class="flex-1 bg-gray-50 py-4 rounded-2xl flex flex-col items-center justify-center gap-1"><span class="text-lg">👎</span><span class="text-[8px] font-bold text-gray-400">好みじゃない</span></button>
-                    </div>
-                </div>
-            `;
-
-            document.getElementById('ai-reason-text').innerText = 
-                `今日は気温${temp}℃で、${weather === 'Sunny' ? '気持ちの良い晴天' : 'あいにくの空模様'}ですので、${temp > 22 ? '通気性の良い組み合わせ' : 'レイヤードで体温調節ができる構成'}にしました。あなたの好みの${main[0].color}を活かしつつ、直近の着用アイテムと被らない新鮮なスタイルです。`;
-
-            const altEl = document.getElementById('alternative-container');
-            altEl.innerHTML = alts.map((outfit, i) => `
-                <div class="premium-card p-4 bg-white">
-                    <div class="flex -space-x-4 mb-4">
-                        ${outfit.slice(0, 3).map(it => `<div class="w-12 h-16 rounded-xl border-2 border-white bg-cover bg-center shadow-sm" style="background-image: url(${it.image})"></div>`).join('')}
-                    </div>
-                    <button onclick='confirmWear("${purpose}", ${JSON.stringify(outfit).replace(/"/g, "&quot;")})' class="w-full py-2 bg-gray-100 rounded-xl text-[8px] font-bold uppercase">これにする</button>
-                </div>
-            `).join('');
-        }
-
-        // --- フィードバックと履歴 ---
-        function rate(points, ids, purpose) {
-            ids.forEach(id => appState.itemScores[id] = (appState.itemScores[id] || 0) + points);
-            appState.purposeScores[purpose] = (appState.purposeScores[purpose] || 0) + points;
-            alert("評価を保存しました。AIが好みを学習します。");
-            updateLearningUI();
-            saveData();
-        }
-
-        function confirmWear(purpose, items) {
-            appState.history.unshift({ id: Date.now(), date: new Date().toLocaleDateString('ja-JP'), purpose, items });
-            saveData();
-            alert("着用履歴に保存しました。");
-            navigateTo('history');
-        }
-
-        // --- AIスタイル分析 ---
-        function runAIAnalysis() {
-            const scoreCount = Object.keys(appState.itemScores).length;
-            const styleLabel = document.getElementById('style-type-label');
-            const summaryEl = document.getElementById('preference-summary');
-            
-            if (scoreCount < 3) {
-                styleLabel.innerText = "分析中...";
-                summaryEl.innerText = "アイテムを評価すると、あなたの好みをAIが詳しく分析します。";
-                return;
-            }
-
-            const topPurpose = Object.entries(appState.purposeScores).sort((a,b) => b[1] - a[1])[0];
-            const mapping = { '普段着':'ミニマル', '大人カジュアル':'スマート', '韓国ストリート':'ストリート', 'モード':'モード', 'デート':'エレガント' };
-            styleLabel.innerText = mapping[topPurpose?.[0]] || "ミックススタイル";
-
-            let colorMap = {};
-            appState.closetItems.forEach(it => {
-                if((appState.itemScores[it.id] || 0) > 0) colorMap[it.color] = (colorMap[it.color] || 0) + 1;
-            });
-            const topColors = Object.entries(colorMap).sort((a,b) => b[1] - a[1]).slice(0, 2);
-            document.getElementById('analysis-colors').innerHTML = topColors.map(c => `<div class="flex items-center gap-2 text-[10px] font-bold"><span class="color-dot" style="background:${getHex(c[0])}"></span>${c[0]}</div>`).join('');
-
-            summaryEl.innerText = `あなたは${topPurpose ? topPurpose[0] : '落ち着いた'}スタイルを好む傾向にあり、特に${topColors[0] ? topColors[0][0] : '特定の'}カラーのアイテムを高評価しています。`;
-            document.getElementById('analysis-next').innerText = `次回の提案では、お気に入りの${topColors[0] ? topColors[0][0] : ''}アイテムを中心に、シルエットにこだわった構成を提案します。`;
-        }
-
-        function getHex(name) {
-            const m = { 'ブラック':'#000', 'ホワイト':'#FFF', 'グレー':'#888', 'ネイビー':'#000080', 'ベージュ':'#F5F5DC', 'ブルー':'#3b82f6', 'レッド':'#ef4444' };
-            return m[name] || '#DDD';
-        }
-
-        // --- レンダリングヘルパー ---
         function renderCloset() {
             const grid = document.getElementById('closet-grid');
             if (appState.closetItems.length === 0) {
-                grid.innerHTML = '<div class="col-span-2 py-20 text-center text-gray-300 text-xs">アイテムがありません</div>';
+                grid.innerHTML = `<div class="col-span-2 py-20 text-center text-gray-300">クローゼットは空です</div>`;
                 return;
             }
             grid.innerHTML = appState.closetItems.map(it => `
-                <div class="premium-card p-3">
-                    <div class="aspect-square bg-cover bg-center rounded-2xl mb-2" style="background-image: url(${it.image})"></div>
-                    <p class="text-[8px] text-gray-400 font-bold uppercase">${it.category}</p>
-                    <p class="text-[10px] font-bold truncate">${it.brand}</p>
+                <div class="premium-card">
+                    <div class="img-container"><img src="${it.image}"></div>
+                    <div class="p-3">
+                        <p class="text-[8px] text-gray-400 font-bold uppercase">${it.cat} / ${it.season}</p>
+                        <p class="text-[10px] font-bold truncate">${it.name}</p>
+                    </div>
                 </div>
             `).join('');
         }
 
+        // --- コーデ生成ロジック ---
+        function renderPurposeSelection() {
+            const grid = document.getElementById('purpose-grid');
+            grid.innerHTML = PURPOSES.map(p => `
+                <button onclick="selectPurpose('${p}')" class="h-28 premium-card font-bold active:scale-95 transition-all">${p}</button>
+            `).join('');
+        }
+
+        function selectPurpose(p) {
+            appState.selectedPurpose = p;
+            generateOutfit();
+        }
+
+        function generateOutfit() {
+            if (appState.closetItems.length < 2) return alert("まずはアイテムを登録してください");
+
+            // スコアリングとフィルタリング
+            const items = [...appState.closetItems].map(it => {
+                let s = appState.itemScores[it.id] || 0;
+                // 重複回避 (直近3回)
+                const recentWears = appState.history.slice(0, 3).some(h => h.items.some(hi => hi.id === it.id));
+                if (recentWears) s -= 20;
+                
+                // 季節・目的による簡易フィルタ
+                if (appState.selectedPurpose === "暑い日" && it.season === "夏") s += 10;
+                if (appState.selectedPurpose === "寒い日" && it.season === "冬") s += 10;
+                
+                return { ...it, _s: s + Math.random() * 5 };
+            }).sort((a,b) => b._s - a._s);
+
+            // カテゴリ分け
+            const tops = items.filter(i => i.cat === "トップス");
+            const bottoms = items.filter(i => i.cat === "ボトムス");
+            const outers = items.filter(i => i.cat === "アウター");
+            const shoes = items.filter(i => i.cat === "シューズ");
+
+            // 組み合わせロジック
+            let outfit = [];
+            if (tops.length > 0) outfit.push(tops[0]);
+            if (bottoms.length > 0) outfit.push(bottoms[0]);
+            if (outers.length > 0 && (appState.selectedPurpose === "寒い日" || Math.random() > 0.5)) outfit.push(outers[0]);
+            if (shoes.length > 0) outfit.push(shoes[0]);
+
+            appState.currentOutfit = outfit;
+            renderResults();
+            navigateTo('results');
+        }
+
+        function renderResults() {
+            document.getElementById('result-title').innerText = appState.selectedPurpose;
+            const container = document.getElementById('main-outfit-display');
+            container.innerHTML = appState.currentOutfit.map(it => `
+                <div class="flex items-center gap-4">
+                    <div class="w-20 h-24 rounded-2xl overflow-hidden shadow-sm border"><img src="${it.image}" class="w-full h-full object-cover"></div>
+                    <div>
+                        <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">${it.cat}</p>
+                        <p class="text-sm font-bold tracking-tight">${it.name}</p>
+                        <p class="text-[10px] text-gray-400">${it.color} / ${it.season}</p>
+                    </div>
+                </div>
+            `).join('<div class="h-[1px] bg-gray-100"></div>');
+        }
+
+        function rateOutfit(points) {
+            appState.currentOutfit.forEach(it => {
+                appState.itemScores[it.id] = (appState.itemScores[it.id] || 0) + points;
+            });
+            alert("フィードバックをAIに保存しました");
+            saveData();
+            updateUI();
+        }
+
+        function confirmWearToday() {
+            appState.history.unshift({ id: Date.now(), purpose: appState.selectedPurpose, items: appState.currentOutfit });
+            appState.learningLv += 0.2;
+            saveData();
+            alert("着用履歴に保存しました");
+            navigateTo('history');
+        }
+
+        // --- その他表示 ---
         function renderHistory() {
             const container = document.getElementById('history-container');
             if (appState.history.length === 0) {
-                container.innerHTML = '<div class="text-center py-20 text-gray-400 text-xs">着用履歴はありません</div>';
+                container.innerHTML = `<div class="py-20 text-center text-gray-300">履歴はありません</div>`;
                 return;
             }
             container.innerHTML = appState.history.map(h => `
-                <div class="premium-card p-4 flex gap-4 items-center">
-                    <div class="flex -space-x-4">
-                        ${h.items.slice(0, 2).map(i => `<div class="w-10 h-14 rounded-lg border-2 border-white bg-cover bg-center" style="background-image: url(${i.image})"></div>`).join('')}
+                <div class="premium-card p-4 flex items-center gap-4">
+                    <div class="flex -space-x-3">
+                        ${h.items.slice(0, 3).map(i => `<div class="w-10 h-14 rounded-lg border-2 border-white bg-cover bg-center shadow-sm" style="background-image:url(${i.image})"></div>`).join('')}
                     </div>
                     <div>
-                        <p class="text-[8px] font-bold text-gray-400 uppercase tracking-widest">${h.date}</p>
-                        <p class="font-bold text-xs italic">${h.purpose}</p>
+                        <p class="text-[10px] font-bold italic uppercase text-gray-400">${h.purpose}</p>
+                        <p class="text-[8px] text-gray-300">${new Date(h.id).toLocaleDateString()}</p>
                     </div>
                 </div>
             `).join('');
         }
 
-        function renderFavorites() {
-            document.getElementById('favorites-container').innerHTML = '<p class="text-center text-xs text-gray-400 py-20">お気に入りのコーデ機能は近日アップデート予定です</p>';
-        }
-
-        function renderHomePreview() {
+        function renderHome() {
             const container = document.getElementById('home-closet-preview');
-            if (appState.closetItems.length > 0) {
-                container.innerHTML = appState.closetItems.slice(0, 4).map(it => `
-                    <div class="premium-card p-2"><div class="aspect-[4/5] bg-cover bg-center rounded-2xl" style="background-image: url(${it.image})"></div></div>
-                `).join('');
-            } else {
-                container.innerHTML = '<div class="col-span-2 py-12 text-center bg-white rounded-[32px] border border-dashed border-gray-200 text-gray-400 text-[10px] uppercase tracking-widest">クローゼットが空です</div>';
+            if (appState.closetItems.length === 0) {
+                container.innerHTML = `<div class="col-span-2 py-10 text-center text-gray-300 text-xs">アイテムを登録しましょう</div>`;
+                return;
             }
+            container.innerHTML = appState.closetItems.slice(0, 4).map(it => `
+                <div class="premium-card p-2">
+                    <div class="img-container rounded-2xl overflow-hidden"><img src="${it.image}"></div>
+                </div>
+            `).join('');
         }
 
-        function updateLearningUI() {
-            const scoreCount = Object.keys(appState.itemScores).length;
-            const level = Math.floor(scoreCount / 5) + 1;
-            const badge = document.getElementById('learning-level-home');
-            const badge2 = document.getElementById('analysis-lv');
-            if(badge) badge.innerText = `学習レベル: ${String(level).padStart(2, '0')}`;
-            if(badge2) badge2.innerText = `LV. ${String(level).padStart(2, '0')}`;
+        function updateUI() {
+            document.getElementById('display-lv').innerText = `LV. ${Math.floor(appState.learningLv).toString().padStart(2, '0')}`;
         }
 
-        function saveProfile() {
-            appState.profile.height = document.getElementById('p-height').value;
-            appState.profile.weight = document.getElementById('p-weight').value;
-            appState.profile.bt = document.querySelector('input[name="bt"]:checked').value;
-            saveData();
-            alert("プロフィールを更新しました");
-        }
-
-        // 初期化
+        // 初期ロード
         loadData();
     </script>
 </body>
