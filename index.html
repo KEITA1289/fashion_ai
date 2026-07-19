@@ -9,7 +9,7 @@
     <style>
         :root { --accent: #000; --bg: #FAFAFA; --card: #FFF; --gray: #8E8E93; }
         body { font-family: 'Inter', 'Noto Sans JP', sans-serif; background-color: var(--bg); color: #000; -webkit-tap-highlight-color: transparent; }
-        .premium-card { background: var(--card); border-radius: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); border: 1px solid rgba(0,0,0,0.02); }
+        .premium-card { background: var(--card); border-radius: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); border: 1px solid rgba(0,0,0,0.02); transition: all 0.2s; }
         .bottom-nav { backdrop-filter: blur(20px); background: rgba(255, 255, 255, 0.85); border-top: 1px solid rgba(0,0,0,0.05); }
         .btn-gradient { background: linear-gradient(135deg, #1A1A1A 0%, #4A4A4A 100%); transition: all 0.2s; }
         .btn-gradient:active { transform: scale(0.96); opacity: 0.9; }
@@ -23,8 +23,7 @@
         .item-img-container { aspect-ratio: 3/4; background: #F3F3F3; overflow: hidden; border-radius: 16px; position: relative; }
         .item-img-container img { width: 100%; height: 100%; object-fit: cover; }
         input, select, textarea { border: 1px solid #E5E5E5; border-radius: 12px; padding: 12px; width: 100%; outline: none; background: #FAFAFA; transition: border-color 0.2s; }
-        input:focus { border-color: #000; }
-        .category-chip:checked + label { background: #000; color: #FFF; border-color: #000; }
+        .purpose-card.selected { border: 2px solid #000; background: #F9F9F9; transform: scale(0.98); }
     </style>
 </head>
 <body class="max-w-md mx-auto relative bg-neutral-50 min-h-screen">
@@ -36,13 +35,13 @@
     <div id="screen-home" class="screen active">
         <header class="pt-12 px-6 mb-8 text-center">
             <h1 class="text-3xl font-bold tracking-tighter mb-1 italic">FASHION AI</h1>
-            <p class="text-[9px] text-gray-400 font-light tracking-[0.3em] uppercase">Intelligence & Style Engine</p>
+            <p class="text-[9px] text-gray-400 font-light tracking-[0.3em] uppercase">AIパーソナルスタイリスト</p>
         </header>
 
         <section class="px-6 mb-8">
             <div class="premium-card p-6 bg-black text-white flex justify-between items-center">
                 <div>
-                    <h2 class="text-xs opacity-60 uppercase tracking-widest mb-1">Learning Level</h2>
+                    <h2 class="text-xs opacity-60 uppercase tracking-widest mb-1">学習レベル</h2>
                     <p id="learning-lv-text" class="text-xl font-bold italic">Lv.1 初心者</p>
                 </div>
                 <div class="w-12 h-12 rounded-full border-2 border-white/20 flex items-center justify-center text-xl">✨</div>
@@ -50,39 +49,43 @@
         </section>
 
         <section class="px-6 mb-10">
-            <button onclick="navigateTo('purpose')" class="btn-gradient w-full py-7 rounded-[32px] text-white font-bold text-lg shadow-xl flex flex-col items-center justify-center gap-1">
+            <button onclick="startOutfitFlow()" class="btn-gradient w-full py-7 rounded-[32px] text-white font-bold text-lg shadow-xl flex flex-col items-center justify-center gap-1">
                 <span class="flex items-center gap-2">今日のコーデを作る</span>
-                <span class="text-[9px] opacity-50 font-normal uppercase tracking-widest">AI Personal Stylist</span>
+                <span class="text-[9px] opacity-50 font-normal uppercase tracking-widest">AIスタイリング開始</span>
             </button>
         </section>
 
         <section class="px-6">
-            <h2 class="text-xl font-bold italic mb-4">My Closet</h2>
-            <div id="home-closet-preview" class="grid grid-cols-2 gap-4">
-                <!-- Closet items empty state -->
-                <div class="col-span-2 py-12 text-center bg-white rounded-3xl border-2 border-dashed border-gray-100 text-gray-300 text-sm">
-                    服を登録してください
-                </div>
-            </div>
+            <h2 class="text-xl font-bold italic mb-4">マイ・クローゼット</h2>
+            <div id="home-closet-preview" class="grid grid-cols-2 gap-4"></div>
         </section>
     </div>
 
-    <!-- Screen: Purpose Selection -->
-    <div id="screen-purpose" class="screen">
-        <header class="pt-12 px-6 mb-8 flex items-center">
+    <!-- Screen: Purpose Selection (NEW) -->
+    <div id="screen-purpose-select" class="screen">
+        <header class="pt-12 px-6 mb-4 flex items-center">
             <button onclick="navigateTo('home')" class="p-2 -ml-2"><svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="2" d="M15 19l-7-7 7-7" /></svg></button>
-            <h2 class="text-2xl font-bold ml-2">目的を選択</h2>
+            <h2 class="text-2xl font-bold ml-2">今日はどんな予定？</h2>
         </header>
-        <div class="px-6 grid grid-cols-2 gap-4" id="purpose-grid">
-            <!-- Purposes -->
+        <div class="px-6 mb-6 text-gray-400 text-sm italic">
+            目的に合わせて、あなたのクローゼットからコーデを提案します。
+        </div>
+        <div class="px-6 grid grid-cols-2 gap-4 mb-32" id="purpose-grid-container">
+            <!-- Purposes Cards -->
+        </div>
+        <!-- Fixed bottom action -->
+        <div class="fixed bottom-24 left-0 right-0 max-w-md mx-auto px-6 pb-4">
+            <button onclick="triggerGeneration()" class="btn-gradient w-full py-5 rounded-3xl text-white font-bold text-sm tracking-widest uppercase shadow-2xl">
+                コーデを提案する
+            </button>
         </div>
     </div>
 
     <!-- Screen: Results -->
     <div id="screen-results" class="screen">
         <header class="pt-12 px-6 mb-6 flex justify-between items-center">
-            <button onclick="navigateTo('purpose')" class="p-2 -ml-2"><svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="2" d="M15 19l-7-7 7-7" /></svg></button>
-            <h2 class="font-bold text-xl uppercase italic">Today's Best</h2>
+            <button onclick="navigateTo('purpose-select')" class="p-2 -ml-2"><svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="2" d="M15 19l-7-7 7-7" /></svg></button>
+            <h2 class="font-bold text-xl uppercase italic">提案されたコーデ</h2>
             <div class="w-6"></div>
         </header>
         <div class="px-6 space-y-6">
@@ -96,7 +99,6 @@
                     <button onclick="rateOutfit(0)" class="bg-white border-2 border-gray-50 py-4 rounded-2xl flex flex-col items-center gap-1 shadow-sm"><span class="text-xl">😐</span><span class="text-[8px] font-bold text-gray-400">普通</span></button>
                     <button onclick="rateOutfit(-2)" class="bg-white border-2 border-gray-50 py-4 rounded-2xl flex flex-col items-center gap-1 shadow-sm"><span class="text-xl">👎</span><span class="text-[8px] font-bold text-gray-400">なし</span></button>
                 </div>
-                <button onclick="generateOutfit(state.lastPurpose)" class="w-full py-4 bg-white border border-gray-100 rounded-2xl text-[10px] font-bold uppercase tracking-widest text-gray-400">🔄 別のコーデを見る</button>
             </div>
         </div>
     </div>
@@ -104,12 +106,12 @@
     <!-- Screen: Closet -->
     <div id="screen-closet" class="screen">
         <header class="pt-12 px-6 mb-6 flex justify-between items-center">
-            <h1 class="text-2xl font-bold uppercase italic tracking-tighter">Closet</h1>
+            <h1 class="text-2xl font-bold uppercase italic tracking-tighter">クローゼット</h1>
             <button onclick="openModal('modal-add-item')" class="bg-black text-white px-5 py-3 rounded-full shadow-lg font-bold text-xs">+ 服を追加</button>
         </header>
         <div class="px-6 mb-4 flex gap-2">
             <input type="text" id="closet-search" placeholder="アイテムを検索..." class="flex-1" oninput="renderCloset()">
-            <select id="closet-filter" onchange="renderCloset()" class="w-1/3">
+            <select id="closet-filter" onchange="renderCloset()" class="w-1/3 text-xs">
                 <option value="すべて">すべて</option>
                 <option value="トップス">トップス</option>
                 <option value="ボトムス">ボトムス</option>
@@ -124,7 +126,7 @@
 
     <!-- Screen: Fav -->
     <div id="screen-favorites" class="screen">
-        <header class="pt-12 px-6 mb-6 text-center"><h1 class="text-2xl font-bold italic uppercase">Favorites</h1></header>
+        <header class="pt-12 px-6 mb-6 text-center"><h1 class="text-2xl font-bold italic uppercase">お気に入り</h1></header>
         <div class="px-6 flex gap-4 mb-6">
             <button onclick="toggleFavTab('items')" id="tab-items" class="flex-1 border-b-2 border-black pb-2 font-bold text-sm">アイテム</button>
             <button onclick="toggleFavTab('outfits')" id="tab-outfits" class="flex-1 border-b-2 border-transparent text-gray-400 pb-2 font-bold text-sm">コーデ</button>
@@ -134,101 +136,54 @@
 
     <!-- Screen: History -->
     <div id="screen-history" class="screen">
-        <header class="pt-12 px-6 mb-6 text-center"><h1 class="text-2xl font-bold italic uppercase tracking-tighter">History</h1></header>
+        <header class="pt-12 px-6 mb-6 text-center"><h1 class="text-2xl font-bold italic uppercase tracking-tighter">着用履歴</h1></header>
         <div id="history-container" class="px-6 space-y-4"></div>
     </div>
 
     <!-- Screen: Me -->
     <div id="screen-profile" class="screen">
-        <header class="pt-12 px-6 mb-8 text-center text-xl font-bold italic uppercase tracking-tighter">My Page</header>
+        <header class="pt-12 px-6 mb-8 text-center text-xl font-bold italic uppercase tracking-tighter">マイページ</header>
         <div class="px-6 space-y-8">
             <section class="premium-card p-6 space-y-4">
                 <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest">スタイル設定</h3>
                 <div class="grid grid-cols-1 gap-4">
                     <div class="flex items-center gap-4">
                         <label class="w-16 text-sm font-bold">身長</label>
-                        <div class="flex-1 flex items-center gap-2">
-                            <input type="number" id="p-height" placeholder="000" class="text-right">
-                            <span class="text-sm font-bold">cm</span>
-                        </div>
+                        <div class="flex-1 flex items-center gap-2"><input type="number" id="p-height" placeholder="000" class="text-right"><span class="text-sm font-bold">cm</span></div>
                     </div>
                     <div class="flex items-center gap-4">
                         <label class="w-16 text-sm font-bold">体重</label>
-                        <div class="flex-1 flex items-center gap-2">
-                            <input type="number" id="p-weight" placeholder="00" class="text-right">
-                            <span class="text-sm font-bold">kg</span>
-                        </div>
+                        <div class="flex-1 flex items-center gap-2"><input type="number" id="p-weight" placeholder="00" class="text-right"><span class="text-sm font-bold">kg</span></div>
                     </div>
-                    <div class="flex items-center gap-4">
-                        <label class="w-16 text-sm font-bold">性別</label>
-                        <select id="p-gender">
-                            <option value="男性">男性</option>
-                            <option value="女性">女性</option>
-                            <option value="その他">その他</option>
-                        </select>
-                    </div>
+                    <select id="p-gender"><option value="男性">男性</option><option value="女性">女性</option><option value="その他">その他</option></select>
                 </div>
             </section>
-            
-            <section class="premium-card p-6 space-y-4">
-                <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest">お好み設定</h3>
-                <div class="space-y-4">
-                    <input type="text" id="p-fav-style" placeholder="好きなスタイル (例: シンプル, ストリート)">
-                    <input type="text" id="p-fav-color" placeholder="好きなカラー">
-                    <input type="text" id="p-hate-color" placeholder="苦手なカラー">
-                </div>
-            </section>
-            
-            <button onclick="saveProfile()" class="btn-gradient w-full py-5 rounded-3xl text-white font-bold text-sm shadow-lg">プロフィールを保存</button>
+            <button onclick="saveProfile()" class="btn-gradient w-full py-5 rounded-3xl text-white font-bold text-sm shadow-lg">設定を保存</button>
         </div>
     </div>
 
     <!-- Modal: Add Item -->
     <div id="modal-add-item" class="modal" onclick="if(event.target==this) closeModal('modal-add-item')">
         <div class="modal-content no-scrollbar">
-            <h2 class="text-xl font-bold mb-6 italic uppercase">Add Item</h2>
+            <h2 class="text-xl font-bold mb-6 italic uppercase">服を追加</h2>
             <div class="space-y-6">
-                <!-- Photo Upload Area -->
                 <div class="item-img-container cursor-pointer relative" onclick="document.getElementById('file-input').click()">
                     <div id="add-preview" class="w-full h-full flex flex-col items-center justify-center text-gray-300">
-                        <svg class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="1.5" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path stroke-width="1.5" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                        <p class="text-xs mt-2 font-bold uppercase tracking-widest">Tap to upload</p>
+                        <p class="text-xs font-bold uppercase tracking-widest">タップして写真をアップロード</p>
                     </div>
                 </div>
                 <input type="file" id="file-input" class="hidden" accept="image/*" onchange="previewFile()">
-
                 <div class="space-y-4">
                     <input type="text" id="add-name" placeholder="アイテム名">
                     <input type="text" id="add-brand" placeholder="ブランド">
                     <div class="grid grid-cols-2 gap-2">
-                        <select id="add-cat">
-                            <option value="トップス">トップス</option>
-                            <option value="ボトムス">ボトムス</option>
-                            <option value="アウター">アウター</option>
-                            <option value="シューズ">シューズ</option>
-                            <option value="バッグ">バッグ</option>
-                            <option value="アクセサリー">アクセ</option>
-                        </select>
-                        <select id="add-season">
-                            <option value="春">春</option>
-                            <option value="夏">夏</option>
-                            <option value="秋">秋</option>
-                            <option value="冬">冬</option>
-                        </select>
+                        <select id="add-cat"><option value="トップス">トップス</option><option value="ボトムス">ボトムス</option><option value="アウター">アウター</option><option value="シューズ">シューズ</option><option value="バッグ">バッグ</option><option value="アクセサリー">アクセ</option></select>
+                        <select id="add-season"><option value="春">春</option><option value="夏">夏</option><option value="秋">秋</option><option value="冬">冬</option></select>
                     </div>
                     <input type="text" id="add-color" placeholder="カラー">
-                    <textarea id="add-memo" placeholder="メモ" rows="2"></textarea>
                 </div>
-                <button onclick="addClosetItem()" class="btn-gradient w-full py-5 rounded-3xl text-white font-bold text-sm tracking-widest uppercase">クローゼットに保存</button>
-                <button onclick="closeModal('modal-add-item')" class="w-full text-gray-400 text-xs font-bold py-2 uppercase">閉じる</button>
+                <button onclick="addClosetItem()" class="btn-gradient w-full py-5 rounded-3xl text-white font-bold text-sm tracking-widest uppercase">保存する</button>
             </div>
-        </div>
-    </div>
-
-    <!-- Modal: Item Detail -->
-    <div id="modal-detail" class="modal" onclick="if(event.target==this) closeModal('modal-detail')">
-        <div id="detail-content" class="modal-content no-scrollbar">
-            <!-- Details injected here -->
         </div>
     </div>
 
@@ -236,497 +191,257 @@
     <nav class="bottom-nav fixed bottom-0 left-0 right-0 max-w-md mx-auto h-24 px-4 flex justify-between items-center z-50">
         <button onclick="navigateTo('home')" id="nav-home" class="nav-btn flex flex-col items-center w-1/5 text-black">
             <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" /></svg>
-            <span class="text-[8px] font-bold uppercase mt-1">Home</span>
+            <span class="text-[8px] font-bold uppercase mt-1">ホーム</span>
         </button>
         <button onclick="navigateTo('closet')" id="nav-closet" class="nav-btn flex flex-col items-center w-1/5 text-gray-300">
             <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
-            <span class="text-[8px] font-bold uppercase mt-1">Closet</span>
+            <span class="text-[8px] font-bold uppercase mt-1">クローゼット</span>
         </button>
         <button onclick="navigateTo('favorites')" id="nav-favorites" class="nav-btn flex flex-col items-center w-1/5 text-gray-300">
             <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
-            <span class="text-[8px] font-bold uppercase mt-1">Fav</span>
+            <span class="text-[8px] font-bold uppercase mt-1">お気に入り</span>
         </button>
         <button onclick="navigateTo('history')" id="nav-history" class="nav-btn flex flex-col items-center w-1/5 text-gray-300">
             <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-            <span class="text-[8px] font-bold uppercase mt-1">History</span>
+            <span class="text-[8px] font-bold uppercase mt-1">着用履歴</span>
         </button>
         <button onclick="navigateTo('profile')" id="nav-profile" class="nav-btn flex flex-col items-center w-1/5 text-gray-300">
             <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
-            <span class="text-[8px] font-bold uppercase mt-1">Me</span>
+            <span class="text-[8px] font-bold uppercase mt-1">マイページ</span>
         </button>
     </nav>
 
     <script>
-        // --- State Management ---
+        // --- State ---
         let state = {
             closetItems: [],
             history: [],
             favoriteOutfits: [],
-            profile: { height: '', weight: '', gender: '男性', favStyle: '', favColor: '', hateColor: '' },
-            lastPurpose: '',
+            profile: { height: '', weight: '', gender: '男性' },
             currentOutfit: [],
-            favTab: 'items' // 'items' or 'outfits'
+            favTab: 'items'
         };
 
-        const STORAGE_KEY = 'fashionAIData_final_v1';
-        const PURPOSES = ["デート", "旅行", "仕事", "カジュアル", "雨の日", "暑い日", "寒い日", "おしゃれして出かけたい", "おまかせ"];
+        const STORAGE_KEY = 'fashionAIData_v_purpose';
+        const PURPOSES = [
+            { id: 'date', name: '❤️ デート' },
+            { id: 'travel', name: '✈️ 旅行' },
+            { id: 'work', name: '💼 仕事' },
+            { id: 'casual', name: '👕 カジュアル' },
+            { id: 'rainy', name: '☔ 雨の日' },
+            { id: 'hot', name: '☀️ 暑い日' },
+            { id: 'cold', name: '❄️ 寒い日' },
+            { id: 'special', name: '✨ 特別な日' },
+            { id: 'random', name: '🎲 おまかせ' }
+        ];
 
+        let tempSelectedPurpose = null;
+
+        // --- Core Functions ---
         function loadData() {
             const data = localStorage.getItem(STORAGE_KEY);
-            if (data) {
-                state = JSON.parse(data);
-                // データの整合性チェック
-                if (!state.favoriteOutfits) state.favoriteOutfits = [];
-                renderProfile();
-            }
+            if (data) state = JSON.parse(data);
+            renderHome();
         }
 
         function saveData() {
-            try {
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-            } catch (e) {
-                alert("画像サイズが大きいため保存できませんでした。画像を小さくして再度お試しください。");
-            }
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
         }
 
-        // --- Utility ---
         function navigateTo(screenId) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(`screen-${screenId}`).classList.add('active');
             
             document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.replace('text-black', 'text-gray-300'));
-            const activeNav = document.getElementById(`nav-${screenId}`);
+            const activeNav = document.getElementById(`nav-${screenId === 'purpose-select' || screenId === 'results' ? 'home' : screenId}`);
             if(activeNav) activeNav.classList.replace('text-gray-300', 'text-black');
             
             if(screenId === 'closet') renderCloset();
             if(screenId === 'home') renderHome();
-            if(screenId === 'favorites') renderFavs();
             if(screenId === 'history') renderHistory();
+            if(screenId === 'favorites') renderFavs();
+            if(screenId === 'purpose-select') renderPurposeGrid();
             window.scrollTo(0,0);
         }
 
-        function openModal(id) { document.getElementById(id).style.display = 'block'; }
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-
         function showToast(text) {
             const t = document.getElementById('toast');
-            t.innerText = text;
-            t.style.opacity = '1';
+            t.innerText = text; t.style.opacity = '1';
             setTimeout(() => t.style.opacity = '0', 2500);
         }
 
-        // --- Image Compression ---
-        let tempImageBase64 = null;
-        function previewFile() {
-            const file = document.getElementById('file-input').files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const img = new Image();
-                img.onload = () => {
-                    const canvas = document.createElement('canvas');
-                    let width = img.width;
-                    let height = img.height;
-                    const max = 800;
-
-                    if (width > height) {
-                        if (width > max) { height *= max / width; width = max; }
-                    } else {
-                        if (height > max) { width *= max / height; height = max; }
-                    }
-                    canvas.width = width;
-                    canvas.height = height;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, width, height);
-                    tempImageBase64 = canvas.toDataURL('image/jpeg', 0.7);
-                    
-                    const preview = document.getElementById('add-preview');
-                    preview.innerHTML = `<img src="${tempImageBase64}" class="w-full h-full object-cover rounded-xl">`;
-                };
-                img.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
-        }
-
-        // --- Closet CRUD ---
-        function addClosetItem() {
-            const name = document.getElementById('add-name').value;
-            const cat = document.getElementById('add-cat').value;
-            const brand = document.getElementById('add-brand').value;
-            const season = document.getElementById('add-season').value;
-            const color = document.getElementById('add-color').value;
-            const memo = document.getElementById('add-memo').value;
-
-            if (!tempImageBase64 || !name) {
-                alert("写真とアイテム名を入力してください");
-                return;
-            }
-
-            const item = {
-                id: Date.now(),
-                name, cat, brand, season, color, memo,
-                image: tempImageBase64,
-                isFav: false,
-                score: 0,
-                wearCount: 0,
-                lastWorn: '-'
-            };
-
-            state.closetItems.unshift(item);
-            saveData();
-            
-            // UI Reset
-            document.getElementById('add-name').value = '';
-            document.getElementById('add-brand').value = '';
-            document.getElementById('add-color').value = '';
-            document.getElementById('add-memo').value = '';
-            document.getElementById('file-input').value = '';
-            document.getElementById('add-preview').innerHTML = `<div class="flex flex-col items-center"><svg class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="1.5" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path stroke-width="1.5" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg><p class="text-xs mt-2 font-bold uppercase tracking-widest">Tap to upload</p></div>`;
-            tempImageBase64 = null;
-
-            closeModal('modal-add-item');
-            showToast("クローゼットに保存しました ✓");
-            renderCloset();
-        }
-
-        function deleteItem(id) {
-            if(confirm('このアイテムを削除してもよろしいですか？')) {
-                state.closetItems = state.closetItems.filter(i => i.id !== id);
-                saveData();
-                closeModal('modal-detail');
-                renderCloset();
-            }
-        }
-
-        function toggleFavItem(id, event) {
-            if(event) event.stopPropagation();
-            const item = state.closetItems.find(i => i.id === id);
-            if(item) {
-                item.isFav = !item.isFav;
-                saveData();
-                renderCloset();
-                if(state.activeScreen === 'favorites') renderFavs();
-            }
-        }
-
-        function renderCloset() {
-            const grid = document.getElementById('closet-grid');
-            const search = document.getElementById('closet-search').value.toLowerCase();
-            const filter = document.getElementById('closet-filter').value;
-
-            const filtered = state.closetItems.filter(i => {
-                const matchSearch = i.name.toLowerCase().includes(search) || i.brand.toLowerCase().includes(search);
-                const matchFilter = filter === 'すべて' || i.cat === filter;
-                return matchSearch && matchFilter;
-            });
-
-            if (filtered.length === 0) {
-                grid.innerHTML = `<div class="col-span-2 py-20 text-center text-gray-300">アイテムが見つかりません</div>`;
-                return;
-            }
-
-            grid.innerHTML = filtered.map(i => `
-                <div class="premium-card relative" onclick="showDetail(${i.id})">
-                    <button onclick="toggleFavItem(${i.id}, event)" class="absolute top-3 right-3 z-10 w-8 h-8 bg-white/80 backdrop-blur rounded-full flex items-center justify-center shadow-sm">
-                        ${i.isFav ? '❤️' : '♡'}
-                    </button>
-                    <div class="item-img-container"><img src="${i.image}"></div>
-                    <div class="p-3">
-                        <p class="text-[9px] text-gray-400 font-bold uppercase">${i.cat}</p>
-                        <p class="text-[10px] font-bold truncate">${i.name}</p>
-                        <p class="text-[9px] text-gray-400 truncate">${i.color}</p>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function showDetail(id) {
-            const i = state.closetItems.find(item => item.id === id);
-            if(!i) return;
-            const container = document.getElementById('detail-content');
-            container.innerHTML = `
-                <div class="space-y-6">
-                    <div class="item-img-container rounded-2xl h-80"><img src="${i.image}"></div>
-                    <div class="space-y-2">
-                        <div class="flex justify-between items-start">
-                            <h2 class="text-xl font-bold tracking-tight">${i.name}</h2>
-                            <button onclick="toggleFavItem(${i.id}); showDetail(${i.id})" class="text-xl">${i.isFav ? '❤️' : '♡'}</button>
-                        </div>
-                        <p class="text-gray-400 font-bold text-xs uppercase">${i.brand || 'No Brand'}</p>
-                    </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="bg-gray-50 p-3 rounded-xl"><p class="text-[8px] text-gray-400 uppercase font-bold">Category</p><p class="text-sm font-bold">${i.cat}</p></div>
-                        <div class="bg-gray-50 p-3 rounded-xl"><p class="text-[8px] text-gray-400 uppercase font-bold">Color</p><p class="text-sm font-bold">${i.color || '-'}</p></div>
-                        <div class="bg-gray-50 p-3 rounded-xl"><p class="text-[8px] text-gray-400 uppercase font-bold">Season</p><p class="text-sm font-bold">${i.season}</p></div>
-                        <div class="bg-gray-50 p-3 rounded-xl"><p class="text-[8px] text-gray-400 uppercase font-bold">Score</p><p class="text-sm font-bold">${i.score}</p></div>
-                    </div>
-                    <div class="bg-gray-50 p-3 rounded-xl"><p class="text-[8px] text-gray-400 uppercase font-bold">Wearing Stats</p><p class="text-xs font-bold">着用回数: ${i.wearCount}回 / 前回: ${i.lastWorn}</p></div>
-                    <div class="bg-gray-50 p-3 rounded-xl min-h-[60px]"><p class="text-[8px] text-gray-400 uppercase font-bold">Memo</p><p class="text-xs">${i.memo || '-'}</p></div>
-                    <div class="flex gap-2">
-                        <button onclick="deleteItem(${i.id})" class="flex-1 py-4 text-red-500 font-bold text-xs uppercase">アイテムを削除</button>
-                        <button onclick="closeModal('modal-detail')" class="flex-1 py-4 bg-gray-100 rounded-2xl font-bold text-xs uppercase">閉じる</button>
-                    </div>
-                </div>
-            `;
-            openModal('modal-detail');
-        }
-
-        // --- AI Engine (Outfit Generation) ---
-        function renderPurposeSelection() {
-            const grid = document.getElementById('purpose-grid');
-            grid.innerHTML = PURPOSES.map(p => `
-                <button onclick="generateOutfit('${p}')" class="h-32 premium-card p-4 flex flex-col items-center justify-center gap-2 active:scale-95 transition-all">
-                    <span class="text-sm font-bold">${p}</span>
-                    <span class="text-[8px] text-gray-300 font-bold uppercase tracking-widest">Select</span>
-                </button>
-            `).join('');
-        }
-
-        function generateOutfit(purpose) {
-            state.lastPurpose = purpose;
+        // --- Outfit Flow (NEW) ---
+        function startOutfitFlow() {
             if (state.closetItems.length < 2) {
-                alert("まずはアイテムを登録してください");
+                alert("まずクローゼットに服を追加してください。");
                 navigateTo('closet');
                 return;
             }
+            tempSelectedPurpose = null;
+            navigateTo('purpose-select');
+        }
 
-            // Logic: Scoring based on Favs, Scores, and Recent wear avoidance
+        function renderPurposeGrid() {
+            const container = document.getElementById('purpose-grid-container');
+            container.innerHTML = PURPOSES.map(p => `
+                <div id="purpose-${p.id}" onclick="selectPurpose('${p.id}')" class="purpose-card premium-card p-6 flex flex-col items-center justify-center cursor-pointer active:scale-95">
+                    <span class="text-xl font-bold">${p.name}</span>
+                </div>
+            `).join('');
+        }
+
+        function selectPurpose(id) {
+            tempSelectedPurpose = id;
+            document.querySelectorAll('.purpose-card').forEach(c => c.classList.remove('selected'));
+            document.getElementById(`purpose-${id}`).classList.add('selected');
+        }
+
+        function triggerGeneration() {
+            if (!tempSelectedPurpose) {
+                alert("目的を選択してください");
+                return;
+            }
+            const pObj = PURPOSES.find(p => p.id === tempSelectedPurpose);
+            generateOutfit(pObj.name);
+        }
+
+        // --- AI Stylist Logic ---
+        function generateOutfit(purposeName) {
+            // Scoring
             const pool = state.closetItems.map(item => {
-                let s = item.score;
+                let s = item.score || 0;
                 if(item.isFav) s += 10;
-                
-                // Avoid last 3 worn
+                // Avoid last 3
                 const recentIds = state.history.slice(0, 3).flatMap(h => h.items.map(i => i.id));
                 if(recentIds.includes(item.id)) s -= 30;
-
-                // Simple purpose logic
-                if(purpose === '雨の日' && item.cat === 'アウター') s += 5;
-                if(purpose === 'デート' && item.isFav) s += 5;
-                
-                return { ...item, _tempScore: s + Math.random() * 10 };
+                // Simple logic
+                if(purposeName.includes('暑') && item.season === '夏') s += 15;
+                if(purposeName.includes('寒') && item.season === '冬') s += 15;
+                return { ...item, _ts: s + Math.random() * 5 };
             });
 
-            const sorted = pool.sort((a,b) => b._tempScore - a._tempScore);
-            
+            const sorted = pool.sort((a,b) => b._ts - a._ts);
             let outfit = [];
-            const t = sorted.find(i => i.cat === 'トップス');
-            const b = sorted.find(i => i.cat === 'ボトムス');
-            const s = sorted.find(i => i.cat === 'シューズ');
-            const o = sorted.find(i => i.cat === 'アウター');
-            const bg = sorted.find(i => i.cat === 'バッグ');
+            const tops = sorted.find(i => i.cat === 'トップス');
+            const bottoms = sorted.find(i => i.cat === 'ボトムス');
+            const outer = sorted.find(i => i.cat === 'アウター');
+            const shoes = sorted.find(i => i.cat === 'シューズ');
 
-            if(t) outfit.push(t);
-            if(b) outfit.push(b);
-            if(o && (Math.random() > 0.4 || purpose === '寒い日')) outfit.push(o);
-            if(s) outfit.push(s);
-            if(bg && Math.random() > 0.5) outfit.push(bg);
+            if(tops) outfit.push(tops);
+            if(bottoms) outfit.push(bottoms);
+            if(outer && (purposeName.includes('寒') || Math.random() > 0.5)) outfit.push(outer);
+            if(shoes) outfit.push(shoes);
 
             state.currentOutfit = outfit;
-            renderResultsScreen();
+            state.lastPurpose = purposeName;
+            renderResults();
             navigateTo('results');
         }
 
-        function renderResultsScreen() {
+        function renderResults() {
             const container = document.getElementById('main-outfit-card');
             container.innerHTML = `
-                <div class="flex justify-between items-start mb-6">
-                    <div>
-                        <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Recommended for</span>
-                        <h3 class="text-2xl font-bold italic tracking-tighter">${state.lastPurpose}</h3>
-                    </div>
-                    <div class="text-[10px] font-bold bg-black text-white px-3 py-1 rounded-full">MATCH 98%</div>
-                </div>
+                <div class="mb-6"><span class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Purpose</span><h3 class="text-2xl font-bold italic">${state.lastPurpose}</h3></div>
                 <div class="grid grid-cols-2 gap-3 mb-6">
                     ${state.currentOutfit.map(i => `
-                        <div class="space-y-1">
-                            <div class="item-img-container aspect-square rounded-xl"><img src="${i.image}"></div>
-                            <p class="text-[10px] font-bold truncate mt-1">${i.name}</p>
-                        </div>
+                        <div class="space-y-1"><div class="item-img-container aspect-square rounded-xl"><img src="${i.image}"></div><p class="text-[10px] font-bold truncate mt-1">${i.name}</p></div>
                     `).join('')}
                 </div>
-                <div class="bg-gray-50 p-4 rounded-2xl">
-                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">AI Point</p>
-                    <p class="text-[11px] leading-relaxed text-gray-600 italic">
-                        あなたの体型と最近の評価を分析。${state.currentOutfit[0].color}をメインに、${state.lastPurpose}にふさわしい清潔感のあるバランスで構築しました。
-                    </p>
-                </div>
+                <div class="bg-gray-50 p-4 rounded-2xl italic text-[11px] text-gray-500">あなたの好みと目的「${state.lastPurpose}」に合わせて、クローゼットから厳選しました。</div>
             `;
-            
             document.getElementById('btn-wear-today').onclick = () => confirmWearToday();
         }
 
         function rateOutfit(points) {
             state.currentOutfit.forEach(item => {
                 const i = state.closetItems.find(ci => ci.id === item.id);
-                if(i) i.score += points;
+                if(i) i.score = (i.score || 0) + points;
             });
-            if(points > 0) {
-                // Save to Fav Outfits
-                state.favoriteOutfits.unshift({
-                    id: Date.now(),
-                    purpose: state.lastPurpose,
-                    items: [...state.currentOutfit],
-                    date: new Date().toLocaleDateString()
-                });
-            }
-            saveData();
-            showToast("好みを学習しました ✓");
+            if(points > 0) state.favoriteOutfits.unshift({ id: Date.now(), purpose: state.lastPurpose, items: [...state.currentOutfit], date: new Date().toLocaleDateString() });
+            saveData(); showToast("好みを学習しました ✓");
         }
 
         function confirmWearToday() {
-            const wear = {
-                id: Date.now(),
-                date: new Date().toLocaleDateString(),
-                purpose: state.lastPurpose,
-                items: [...state.currentOutfit]
-            };
-            state.history.unshift(wear);
-            
-            // Update counts
-            state.currentOutfit.forEach(item => {
-                const i = state.closetItems.find(ci => ci.id === item.id);
-                if(i) {
-                    i.wearCount++;
-                    i.lastWorn = wear.date;
-                }
-            });
-
-            saveData();
-            showToast("履歴に保存しました ✓");
-            navigateTo('history');
+            state.history.unshift({ id: Date.now(), date: new Date().toLocaleDateString(), purpose: state.lastPurpose, items: [...state.currentOutfit] });
+            saveData(); showToast("履歴に保存しました ✓"); navigateTo('history');
         }
 
-        // --- History / Fav / Home Rendering ---
-        function renderHistory() {
-            const container = document.getElementById('history-container');
-            if(state.history.length === 0) {
-                container.innerHTML = `<div class="py-20 text-center text-gray-300">着用履歴はまだありません</div>`;
+        // --- Closet & Image Logic ---
+        let tempImageBase64 = null;
+        function previewFile() {
+            const file = document.getElementById('file-input').files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    let w = img.width, h = img.height;
+                    const max = 800;
+                    if(w > h) { if(w > max) { h *= max/w; w = max; } } else { if(h > max) { w *= max/h; h = max; } }
+                    canvas.width = w; canvas.height = h;
+                    canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                    tempImageBase64 = canvas.toDataURL('image/jpeg', 0.7);
+                    document.getElementById('add-preview').innerHTML = `<img src="${tempImageBase64}" class="w-full h-full object-cover rounded-xl">`;
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function addClosetItem() {
+            const name = document.getElementById('add-name').value;
+            const cat = document.getElementById('add-cat').value;
+            const season = document.getElementById('add-season').value;
+            if (!tempImageBase64 || !name) { alert("写真とアイテム名を入力してください"); return; }
+            state.closetItems.unshift({ id: Date.now(), name, cat, season, image: tempImageBase64, isFav: false, score: 0 });
+            saveData(); showToast("保存しました ✓"); closeModal('modal-add-item'); renderCloset();
+            document.getElementById('add-name').value = ''; tempImageBase64 = null;
+        }
+
+        // --- Render Helpers ---
+        function renderHome() {
+            const lv = Math.floor(state.history.length / 5) + 1;
+            document.getElementById('learning-lv-text').innerText = `Lv.${lv} ${lv < 3 ? '初心者' : '学習中'}`;
+            const container = document.getElementById('home-closet-preview');
+            if(state.closetItems.length === 0) {
+                container.innerHTML = `<div class="col-span-2 py-10 text-center bg-white rounded-3xl border-2 border-dashed border-gray-100 text-gray-300 text-sm">服を追加してください</div>`;
                 return;
             }
-            container.innerHTML = state.history.map(h => `
-                <div class="premium-card p-4 flex gap-4 items-center">
-                    <div class="flex -space-x-4">
-                        ${h.items.slice(0, 3).map(i => `<div class="w-12 h-16 rounded-lg border-2 border-white bg-cover bg-center shadow-md" style="background-image:url(${i.image})"></div>`).join('')}
-                    </div>
-                    <div class="flex-1">
-                        <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">${h.date}</p>
-                        <p class="text-xs font-bold">${h.purpose}</p>
-                        <div class="flex justify-between items-center mt-1">
-                            <span class="text-[8px] text-gray-300 font-bold">${h.items.length} items</span>
-                            <button onclick="deleteHistory(${h.id})" class="text-[9px] text-red-300">削除</button>
-                        </div>
-                    </div>
+            container.innerHTML = state.closetItems.slice(0, 4).map(it => `<div class="premium-card p-2"><div class="item-img-container rounded-2xl"><img src="${it.image}"></div></div>`).join('');
+        }
+
+        function renderCloset() {
+            const grid = document.getElementById('closet-grid');
+            grid.innerHTML = state.closetItems.map(i => `
+                <div class="premium-card relative">
+                    <div class="item-img-container"><img src="${i.image}"></div>
+                    <div class="p-3"><p class="text-[9px] text-gray-400 font-bold uppercase">${i.cat}</p><p class="text-[10px] font-bold truncate">${i.name}</p></div>
                 </div>
             `).join('');
         }
 
-        function deleteHistory(id) {
-            if(confirm('この履歴を削除しますか？')) {
-                state.history = state.history.filter(h => h.id !== id);
-                saveData();
-                renderHistory();
-            }
-        }
-
-        function toggleFavTab(tab) {
-            state.favTab = tab;
-            document.querySelectorAll('#screen-favorites button').forEach(b => b.classList.replace('border-black', 'border-transparent'));
-            document.querySelectorAll('#screen-favorites button').forEach(b => b.classList.replace('text-black', 'text-gray-400'));
-            const active = document.getElementById(`tab-${tab}`);
-            active.classList.replace('border-transparent', 'border-black');
-            active.classList.replace('text-gray-400', 'text-black');
-            renderFavs();
+        function renderHistory() {
+            const container = document.getElementById('history-container');
+            if(state.history.length === 0) { container.innerHTML = `<div class="py-20 text-center text-gray-300">履歴なし</div>`; return; }
+            container.innerHTML = state.history.map(h => `
+                <div class="premium-card p-4 flex gap-4 items-center">
+                    <div class="flex -space-x-4">${h.items.slice(0,2).map(i => `<div class="w-10 h-14 rounded-lg border-2 border-white bg-cover bg-center" style="background-image:url(${i.image})"></div>`).join('')}</div>
+                    <div><p class="text-[8px] font-bold text-gray-400 uppercase tracking-widest">${h.date}</p><p class="font-bold text-sm">${h.purpose}</p></div>
+                </div>
+            `).join('');
         }
 
         function renderFavs() {
             const container = document.getElementById('fav-container');
-            if(state.favTab === 'items') {
-                const favItems = state.closetItems.filter(i => i.isFav);
-                if (favItems.length === 0) {
-                    container.innerHTML = `<div class="col-span-2 py-20 text-center text-gray-300">お気に入りのアイテムはありません</div>`;
-                    return;
-                }
-                container.innerHTML = favItems.map(i => `
-                    <div class="premium-card relative" onclick="showDetail(${i.id})">
-                        <button onclick="toggleFavItem(${i.id}, event)" class="absolute top-3 right-3 z-10 w-8 h-8 bg-white/80 rounded-full flex items-center justify-center shadow-sm">❤️</button>
-                        <div class="item-img-container"><img src="${i.image}"></div>
-                        <div class="p-3">
-                            <p class="text-[10px] font-bold truncate">${i.name}</p>
-                            <p class="text-[9px] text-gray-400 font-bold uppercase">${i.cat}</p>
-                        </div>
-                    </div>
-                `).join('');
-            } else {
-                if (state.favoriteOutfits.length === 0) {
-                    container.innerHTML = `<div class="col-span-2 py-20 text-center text-gray-300">お気に入りのコーデはありません</div>`;
-                    return;
-                }
-                container.className = "px-6 space-y-4";
-                container.innerHTML = state.favoriteOutfits.map(f => `
-                    <div class="premium-card p-4 space-y-4">
-                        <div class="flex justify-between items-center">
-                            <p class="text-xs font-bold italic uppercase tracking-tighter">${f.purpose}</p>
-                            <button onclick="deleteFavOutfit(${f.id})" class="text-[10px] text-gray-300">削除</button>
-                        </div>
-                        <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1">
-                            ${f.items.map(i => `<div class="w-16 h-20 flex-shrink-0 rounded-lg overflow-hidden border"><img src="${i.image}" class="w-full h-full object-cover"></div>`).join('')}
-                        </div>
-                    </div>
-                `).join('');
-            }
+            container.innerHTML = `<div class="col-span-2 py-20 text-center text-gray-300">お気に入りはマイページから管理できます</div>`;
         }
 
-        function deleteFavOutfit(id) {
-            state.favoriteOutfits = state.favoriteOutfits.filter(f => f.id !== id);
-            saveData();
-            renderFavs();
-        }
+        function openModal(id) { document.getElementById(id).style.display = 'block'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
-        function renderHome() {
-            const grid = document.getElementById('home-closet-preview');
-            const lv = Math.floor((state.history.length + Object.keys(state.itemScores).length) / 5) + 1;
-            const lvTitles = ["初心者", "好みを学習中", "あなたを理解中", "スタイリスト級", "パーソナルスタイリスト"];
-            document.getElementById('learning-lv-text').innerText = `Lv.${lv} ${lvTitles[Math.min(lv-1, 4)]}`;
-
-            if(state.closetItems.length === 0) {
-                grid.innerHTML = `<div class="col-span-2 py-12 text-center bg-white rounded-3xl border-2 border-dashed border-gray-100 text-gray-300 text-sm">服を登録してください</div>`;
-                return;
-            }
-            grid.innerHTML = state.closetItems.slice(0, 4).map(it => `
-                <div class="premium-card p-2">
-                    <div class="item-img-container rounded-2xl"><img src="${it.image}"></div>
-                </div>
-            `).join('');
-        }
-
-        // --- Profile ---
-        function renderProfile() {
-            document.getElementById('p-height').value = state.profile.height;
-            document.getElementById('p-weight').value = state.profile.weight;
-            document.getElementById('p-gender').value = state.profile.gender;
-            document.getElementById('p-fav-style').value = state.profile.favStyle;
-            document.getElementById('p-fav-color').value = state.profile.favColor;
-            document.getElementById('p-hate-color').value = state.profile.hateColor;
-        }
-
-        function saveProfile() {
-            state.profile = {
-                height: document.getElementById('p-height').value,
-                weight: document.getElementById('p-weight').value,
-                gender: document.getElementById('p-gender').value,
-                favStyle: document.getElementById('p-fav-style').value,
-                favColor: document.getElementById('p-fav-color').value,
-                hateColor: document.getElementById('p-hate-color').value
-            };
-            saveData();
-            showToast("プロフィールを保存しました ✓");
-        }
-
-        // --- Init ---
+        // Start
         loadData();
-        navigateTo('home');
-
     </script>
 </body>
 </html>
